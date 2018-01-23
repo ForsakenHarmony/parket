@@ -1,0 +1,28 @@
+{
+  "name": "state-lib",
+  "version": "0.1.0",
+  "description": "A library to manage applicatioin state, heavily inspired by mobx-state-tree",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ForsakenHarmony/state-lib.git"
+  },
+  "keywords": [
+    "State",
+    "Preact",
+    "React",
+    "Redux"
+  ],
+  "author": "Leah <me@hrmny.pw>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ForsakenHarmony/state-lib/issues"
+  },
+  "homepage": "https://github.com/ForsakenHarmony/state-lib#readme",
+  "dependencies": {
+    "mitt": "^1.1.3"
+  }
+}
