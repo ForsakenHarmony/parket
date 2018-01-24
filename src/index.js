@@ -22,13 +22,16 @@ function cActionProxy (obj, ext, cb, view, symbol) {
         return true;
       }
       const res = target[prop];
-      if (typeof res === 'object' && !res[modelSymbol]) {
+      if (res != null && typeof res === 'object' && !res[modelSymbol]) {
         return (res[apc] = res[apc] && res[apc][symbol] || cActionProxy(res, {}, cb, view, symbol));
       }
       return res || ext[prop];
     },
     set (target, prop, val) {
-      if (typeof val === 'object' && val[modelSymbol]) {
+      if (target[prop] === val) {
+        return true;
+      }
+      if (val != null && typeof val === 'object' && val[modelSymbol]) {
         val[parentSymbol](view, '/' + prop);
       }
       cb('patch', { path: '/' + prop, op: 'replace', value: val });
@@ -52,7 +55,7 @@ const model = ({ initial, actions, views }) => {
     let parent = null;
     let path = '';
     const emitter = mitt();
-    const state = Object.assign({}, typeof initial === 'function' ? initial() : initial, obj);
+    const state = {};
 
     const common = {
       [modelSymbol]: true,
@@ -64,7 +67,11 @@ const model = ({ initial, actions, views }) => {
         if (val.path != null) {
           val.path = path + val.path;
         }
-        emitter.emit(evt, val);
+        if (evt === 'snapshot') {
+          emitter.emit(evt, common.getSnapshot());
+        } else {
+          emitter.emit(evt, val);
+        }
         parent && parent[notifySymbol](evt, val, true);
       },
       subscribe (evt, fn) {
@@ -81,16 +88,28 @@ const model = ({ initial, actions, views }) => {
     const viewProxy = cViewProxy(state, common);
     const actionProxy = cActionProxy(state, common, common[notifySymbol], viewProxy, symbol);
 
+    Object.assign(actionProxy, typeof initial === 'function' ? initial() : initial, obj);
+
     if (actions) {
       const boundActions = actions(actionProxy);
       const keys = Object.keys(boundActions);
+
+      const emitSnapshot = () => {
+        common[notifySymbol]('snapshot', {});
+      };
 
       for (let key of keys) {
         const action = boundActions[key];
 
         common[key] = (...args) => {
           common[notifySymbol]('action', { name: key, path: '', args: args }, true);
-          return action.apply(null, args);
+          const res = action.apply(null, args);
+          if (res.then) {
+            res.then(emitSnapshot)
+          } else {
+            emitSnapshot()
+          }
+          return res;
         };
       }
     }

@@ -1,20 +1,46 @@
 {
-  "name": "state-lib",
+  "name": "parket",
   "version": "0.1.0",
-  "description": "A library to manage applicatioin state, heavily inspired by mobx-state-tree",
-  "main": "src/index.js",
+  "description": "A library to manage application state, heavily inspired by mobx-state-tree",
+  "source": "src/index.js",
+  "module": "dist/parket.es.js",
+  "main": "dist/parket.js",
+  "umd:main": "dist/parket.umd.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm-run-all --silent -p build:*",
+    "build:main": "microbundle",
+    "build:integrations": "microbundle src/integration/*.js -o x.js -f cjs"
+  },
+  "babel": {
+    "presets": [
+      [
+        "env",
+        {
+          "targets": {
+            "node": true
+          }
+        }
+      ]
+    ],
+    "plugins": [
+      [
+        "transform-react-jsx",
+        {
+          "pragma": "h"
+        }
+      ]
+    ]
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ForsakenHarmony/state-lib.git"
   },
   "keywords": [
-    "State",
-    "Preact",
-    "React",
-    "Redux"
+    "state",
+    "preact",
+    "react",
+    "redux"
   ],
   "author": "Leah <me@hrmny.pw>",
   "license": "MIT",
@@ -24,5 +50,18 @@
   "homepage": "https://github.com/ForsakenHarmony/state-lib#readme",
   "dependencies": {
     "mitt": "^1.1.3"
+  },
+  "peerDependencies": {
+    "preact": "*",
+    "react": "*"
+  },
+  "devDependencies": {
+    "babel-plugin-transform-jsx": "^2.0.0",
+    "babel-preset-env": "^1.6.1",
+    "microbundle": "^0.3.1",
+    "npm-run-all": "^4.1.2",
+    "preact": "^8.2.7",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0"
   }
 }

@@ -1,6 +1,6 @@
 const model = require('../src');
 
-const thing = model({
+const Person = model({ // model returns a "constructor" function
   initial: () => ({
     firstname: null,
     lastname: null,
@@ -8,7 +8,7 @@ const thing = model({
   }),
   actions: state => ({
     setFirstName (first) {
-      state.firstname = first; // no set state, no returns to merge
+      state.firstname = first; // no set state, no returns to merge, it's reactive™
     },
     setLastName (last) {
       state.lastname = last;
@@ -22,18 +22,22 @@ const thing = model({
   }),
 });
 
-const instance = thing({ firstname: 'Tom' }); // merge stuff with the initial state
+// merge an object with the initial state
+const instance = Person({ firstname: 'Tom' });
 
+// you can subscribe to actions, patches (state updates) and snapshots (full state after actions)
 instance.subscribe('*', console.log);
 
 instance.setLastName('Clancy');
 
-const fromView = instance.fullname; // views turn into cached getters
+// views turn into cached getters
+console.log(instance.fullname);
 
-console.log(fromView);
-
-instance.setNested(thing()); // nested models also emit events to the parent
+// nested models also bubble up events to the parent
+instance.setNested(thing());
 
 instance.nested.setFirstName('wow');
 
-console.log(instance.getSnapshot()); // { firstname: 'Tom', lastname: 'Clancy',  nested: { firstname: 'wow', lastname: null, nested: null } }
+// you can get a snapshot of the state at any time
+// { firstname: 'Tom', lastname: 'Clancy',  nested: { firstname: 'wow', lastname: null, nested: null } }
+console.log(instance.getSnapshot());

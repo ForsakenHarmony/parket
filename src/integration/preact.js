@@ -2,15 +2,19 @@ import { Component, h } from 'preact';
 
 import { modelSymbol, observedSymbol } from '../symbols';
 
+import { assign } from '../util';
+
+const EMPTY_OBJECT = {};
+
 export function observe (Child) {
   function Wrapper (props) {
-    const update = () => this.setState(null);
+    const update = () => this.setState(EMPTY_OBJECT);
     this.componentDidMount = () => {
       this[observedSymbol] = Object.values(props).filter(prop => prop[modelSymbol]);
-      this[observedSymbol].forEach(model => model.subscribe(update));
+      this[observedSymbol].forEach(model => model.subscribe('patch', update));
     };
     this.componentWillUnmount = () => {
-      this[observedSymbol].forEach(model => model.unsubscribe(update));
+      this[observedSymbol].forEach(model => model.unsubscribe('patch', update));
     };
     this.render = props => h(Child, props);
   }
@@ -20,14 +24,14 @@ export function observe (Child) {
 
 export function connect (Child) {
   function Wrapper (props, { store }) {
-    const update = () => this.setState(null);
+    const update = () => this.setState(EMPTY_OBJECT);
     this.componentDidMount = () => {
-      store.subscribe(update);
+      store.subscribe('patch', update);
     };
     this.componentWillUnmount = () => {
-      store.unsubscribe(update);
+      store.unsubscribe('patch', update);
     };
-    this.render = props => h(Child, props);
+    this.render = props => h(Child, assign({ store }, props));
   }
 
   return (Wrapper.prototype = new Component()).constructor = Wrapper;
