@@ -1,3 +1,12 @@
+.idea
+.vscode
+
 node_modules
-/build
-/*.log
+npm-debug.log
+/dist
+/full
+package-lock.json
+/preact.js
+/preact.js.map
+/react.js
+/react.js.map

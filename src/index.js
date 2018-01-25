@@ -1,6 +1,7 @@
 import mitt from 'mitt';
 
 import { notifySymbol, modelSymbol, parentSymbol, apc, vpc } from './symbols';
+import { assign } from './util';
 
 const cViewProxy = (obj, ext) => new Proxy(obj, {
   get (target, prop) {
@@ -16,20 +17,27 @@ const cViewProxy = (obj, ext) => new Proxy(obj, {
 });
 
 function cActionProxy (obj, ext, cb, view, symbol) {
-  return new Proxy(obj, {
+  const proxy = new Proxy({}, {
     get (target, prop) {
       if (prop === symbol) {
         return true;
       }
       const res = target[prop];
       if (res != null && typeof res === 'object' && !res[modelSymbol]) {
-        return (res[apc] = res[apc] && res[apc][symbol] || cActionProxy(res, {}, cb, view, symbol));
+        return res[apc];
       }
       return res || ext[prop];
     },
     set (target, prop, val) {
       if (target[prop] === val) {
         return true;
+      }
+      if (val != null && typeof val === 'object') {
+        if (val[modelSymbol]) {
+          val[parentSymbol](view, '/' + prop);
+        } else {
+          val[apc] = val[apc] && val[apc][symbol] || cActionProxy(val, {}, cb, view, symbol)
+        }
       }
       if (val != null && typeof val === 'object' && val[modelSymbol]) {
         val[parentSymbol](view, '/' + prop);
@@ -39,6 +47,8 @@ function cActionProxy (obj, ext, cb, view, symbol) {
       return true;
     },
   });
+  assign(proxy, obj);
+  return proxy;
 }
 
 const model = ({ initial, actions, views }) => {
@@ -55,25 +65,9 @@ const model = ({ initial, actions, views }) => {
     let parent = null;
     let path = '';
     const emitter = mitt();
-    const state = {};
+    const state = assign(typeof initial === 'function' ? initial() : initial, obj);
 
     const common = {
-      [modelSymbol]: true,
-      [parentSymbol] (_parent, _path) {
-        parent = _parent;
-        path = _path || '';
-      },
-      [notifySymbol] (evt, val) {
-        if (val.path != null) {
-          val.path = path + val.path;
-        }
-        if (evt === 'snapshot') {
-          emitter.emit(evt, common.getSnapshot());
-        } else {
-          emitter.emit(evt, val);
-        }
-        parent && parent[notifySymbol](evt, val, true);
-      },
       subscribe (evt, fn) {
         emitter.on(evt, fn);
       },
@@ -85,29 +79,41 @@ const model = ({ initial, actions, views }) => {
       },
     };
 
+    common[modelSymbol] = true;
+    common[parentSymbol] = (_parent, _path) => {
+      parent = _parent;
+      path = _path || '';
+    };
+    common[notifySymbol] = (evt, val) => {
+      if (evt === 'snapshot') {
+        val = common.getSnapshot();
+      } else if (val.path != null) {
+        val.path = path + val.path;
+      }
+      emitter.emit(evt, val);
+      parent && parent[notifySymbol](evt, val, true);
+    };
+
     const viewProxy = cViewProxy(state, common);
     const actionProxy = cActionProxy(state, common, common[notifySymbol], viewProxy, symbol);
 
-    Object.assign(actionProxy, typeof initial === 'function' ? initial() : initial, obj);
-
     if (actions) {
       const boundActions = actions(actionProxy);
-      const keys = Object.keys(boundActions);
 
       const emitSnapshot = () => {
         common[notifySymbol]('snapshot', {});
       };
 
-      for (let key of keys) {
+      for (let key in boundActions) {
         const action = boundActions[key];
 
         common[key] = (...args) => {
           common[notifySymbol]('action', { name: key, path: '', args: args }, true);
           const res = action.apply(null, args);
           if (res.then) {
-            res.then(emitSnapshot)
+            res.then(emitSnapshot);
           } else {
-            emitSnapshot()
+            emitSnapshot();
           }
           return res;
         };
