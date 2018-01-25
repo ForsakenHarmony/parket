@@ -1,4 +1,4 @@
-const model = require('../src');
+import model from 'parket';
 
 const Person = model({ // model returns a "constructor" function
   initial: () => ({

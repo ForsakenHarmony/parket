@@ -1,0 +1,28 @@
+{
+  "presets": [
+    [
+      "env",
+      {
+        "targets": {
+          "node": true
+        }
+      }
+    ]
+  ],
+  "plugins": [
+    [
+      "transform-react-jsx",
+      {
+        "pragma": "h"
+      }
+    ],
+    [
+      "jsx-pragmatic",
+      {
+        "module": "preact",
+        "export": "h",
+        "import": "h"
+      }
+    ]
+  ]
+}

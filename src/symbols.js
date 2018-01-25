@@ -1,4 +1,3 @@
-export const notifySymbol = Symbol('notify');
 export const parentSymbol = Symbol('parent');
 export const modelSymbol = Symbol('model');
 export const vpc = Symbol('viewProxyCache');
