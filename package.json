@@ -13,7 +13,7 @@
     "build:main": "microbundle",
     "build:integrations": "microbundle src/integration/*.js -o x.js -f cjs",
     "prepare": "npm t",
-    "release": "np",
+    "release": "np --no-cleanup",
     "precommit": "lint-staged",
     "prettier": "prettier --write src/**/*.js test/**/*.js"
   },
@@ -42,7 +42,13 @@
     "trailingComma": "es5"
   },
   "repository": "ForsakenHarmony/parket",
-  "keywords": ["state", "state machine", "preact", "react", "redux"],
+  "keywords": [
+    "state",
+    "state machine",
+    "preact",
+    "react",
+    "redux"
+  ],
   "files": [
     "src",
     "dist",
@@ -83,7 +89,10 @@
     "react-dom": "^16.2.0"
   },
   "lint-staged": {
-    "*.{js,json,scss}": ["prettier --write", "git add"]
+    "*.js": [
+      "prettier --write",
+      "git add"
+    ]
   },
   "jest": {
     "verbose": true,
