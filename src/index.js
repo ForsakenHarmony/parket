@@ -3,47 +3,59 @@ import mitt from 'mitt';
 import { modelSymbol, parentSymbol, apc, vpc } from './symbols';
 import { assign } from './util';
 
-function setUpObject (obj, emit, symbol, path) {
+function setUpObject(obj, emit, symbol, path) {
   for (let prop in obj) {
     const val = obj[prop];
     if (val != null && typeof val === 'object') {
       if (val[modelSymbol]) {
         val[parentSymbol](emit, path + '/' + prop);
       } else {
-        val[apc] = val[apc] && val[apc][symbol] || cProxy(val, emit, symbol, false, path);
-        val[vpc] = val[vpc] && val[vpc][symbol] || cProxy(val, emit, symbol, true, path);
+        val[apc] =
+          (val[apc] && val[apc][symbol]) ||
+          cProxy(val, emit, symbol, false, path);
+        val[vpc] =
+          (val[vpc] && val[vpc][symbol]) ||
+          cProxy(val, emit, symbol, true, path);
         setUpObject(val);
       }
     }
   }
 }
 
-function cProxy (obj, emit, symbol, view, path) {
-  return new Proxy(
-    obj,
-    {
-      get (target, prop) {
-        if (prop === symbol) return true;
-        const res = target[prop];
-        return (res != null && typeof res === 'object' && (view ? res[vpc] : res[apc])) || res;
-      },
-      set (target, prop, val) {
-        if (view) throw new Error('You can\'t modify the state outside of actions');
-        if (target[prop] === val) return true;
-        if (val != null && typeof val === 'object') {
-          setUpObject(val, emit, symbol);
-        }
-        target[prop] = val;
-        emit('patch', { path: path + '/' + prop, op: 'replace', value: val });
-        return true;
-      },
+function cProxy(obj, emit, symbol, view, path) {
+  return new Proxy(obj, {
+    get(target, prop) {
+      if (prop === symbol) return true;
+      const res = target[prop];
+      return (
+        (res != null &&
+          typeof res === 'object' &&
+          (view ? res[vpc] : res[apc])) ||
+        res
+      );
     },
-  );
+    set(target, prop, val) {
+      if (view)
+        throw new Error("You can't modify the state outside of actions");
+      if (target[prop] === val) return true;
+      if (val != null && typeof val === 'object') {
+        setUpObject(val, emit, symbol);
+      }
+      target[prop] = val;
+      emit('patch', { path: path + '/' + prop, op: 'replace', value: val });
+      return true;
+    },
+  });
 }
 
 const model = ({ initial, actions, views }) => {
-  if (initial == null || typeof initial !== 'object' && typeof initial !== 'function') {
-    throw new Error('You have to supply an object or a function as the initial state');
+  if (
+    initial == null ||
+    (typeof initial !== 'object' && typeof initial !== 'function')
+  ) {
+    throw new Error(
+      'You have to supply an object or a function as the initial state'
+    );
   }
   if (actions != null && typeof actions !== 'function') {
     throw new TypeError('actions has to be a function');
@@ -60,7 +72,7 @@ const model = ({ initial, actions, views }) => {
     const emitter = mitt();
     const state = assign(
       typeof initial === 'function' ? initial() : initial,
-      obj,
+      obj
     );
 
     const emit = (evt, val) => {
@@ -74,20 +86,20 @@ const model = ({ initial, actions, views }) => {
     };
 
     const common = {
-      subscribe (evt, fn) {
+      subscribe(evt, fn) {
         emitter.on(evt, fn);
       },
-      unsubscribe (evt, fn) {
+      unsubscribe(evt, fn) {
         emitter.off(evt, fn);
       },
-      getSnapshot () {
+      getSnapshot() {
         return JSON.parse(JSON.stringify(state));
       },
-      applySnapshot (snapshot) {
+      applySnapshot(snapshot) {
         // FIXME will override nested models
         setUpObject(snapshot, emit, symbol, '');
         assign(state, snapshot);
-        emit('snapshot', {})
+        emit('snapshot', {});
       },
     };
     assign(state, common);
@@ -113,11 +125,7 @@ const model = ({ initial, actions, views }) => {
         const action = boundActions[key];
 
         state[key] = (...args) => {
-          emit(
-            'action',
-            { name: key, path: '', args: args },
-            true,
-          );
+          emit('action', { name: key, path: '', args: args }, true);
           const res = action.apply(null, args);
           if (res != null && res.then) {
             res.then(emitSnapshot);
@@ -137,7 +145,10 @@ const model = ({ initial, actions, views }) => {
       for (let key of keys) {
         const viewFn = boundViews[key];
 
-        Object.defineProperty(state, key, { get: () => cache[key], configurable: false });
+        Object.defineProperty(state, key, {
+          get: () => cache[key],
+          configurable: false,
+        });
         cache[key] = viewFn();
       }
 

@@ -1,19 +1,20 @@
 import model from 'parket';
 
-const Person = model({ // model returns a "constructor" function
+const Person = model({
+  // model returns a "constructor" function
   initial: () => ({
     firstname: null,
     lastname: null,
     nested: null,
   }),
   actions: state => ({
-    setFirstName (first) {
+    setFirstName(first) {
       state.firstname = first; // no set state, no returns to merge, it's reactive™
     },
-    setLastName (last) {
+    setLastName(last) {
       state.lastname = last;
     },
-    setNested (nested) {
+    setNested(nested) {
       state.nested = nested;
     },
   }),

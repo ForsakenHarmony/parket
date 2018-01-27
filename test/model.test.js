@@ -1,6 +1,6 @@
 import model from '../src';
 
-describe('model()', function () {
+describe('model()', function() {
   it('should create a model', () => {
     expect(model({ initial: {} }));
   });
@@ -24,10 +24,10 @@ describe('model()', function () {
         lastname: 'Lennon',
       }),
       actions: state => ({
-        setFirstName (first) {
+        setFirstName(first) {
           state.firstname = first;
         },
-        setLastName (last) {
+        setLastName(last) {
           state.lastname = last;
         },
       }),
@@ -80,7 +80,7 @@ describe('model()', function () {
     expect(aSub).toBeCalled();
   });
 
-  it('should get events from nested objects', function () {
+  it('should get events from nested objects', function() {
     const Model = model({
       initial: {
         nested: {
@@ -102,7 +102,7 @@ describe('model()', function () {
     expect(sub).toBeCalled();
   });
 
-  it('should get events from nested models', function () {
+  it('should get events from nested models', function() {
     const Nested = model({
       initial: {
         test: 0,
@@ -128,7 +128,7 @@ describe('model()', function () {
     expect(sub).toBeCalled();
   });
 
-  it('should apply snapshots', function () {
+  it('should apply snapshots', function() {
     const Person = model({
       initial: {
         firstname: 'John',
@@ -136,7 +136,7 @@ describe('model()', function () {
       },
       views: state => ({
         fullname: () => `${state.firstname} ${state.lastname}`,
-      })
+      }),
     });
 
     const instance = Person();

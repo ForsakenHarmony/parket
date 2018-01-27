@@ -12,6 +12,21 @@
   </a>
 </div>
 
+<br>
+
+ * Small (~1KB)
+ * Immutable from the outside, mutable in actions
+ * Reactive (state emits updates without explicit calls to i.e. `setState`)
+ * Modular (you can nest models inside each other)
+ * Open (state looks however you want it to look)
+
+## Why?
+
+I was disappointed with all the current state management solutions.
+Then I found mobx-state-tree, which seemed like a gosent to me (ok not really, but I liked the concept), but it was pretty big in terms of filesize (mobx alone is big: 16.5kB).
+So I thought it's surely possible to make a smaller version of it, that's how this started.
+And after 2 failed attempts I can finally say: **Here it is in all of it's "glory".**
+
 ## Installation
 
 ```
