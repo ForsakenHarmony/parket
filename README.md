@@ -1,6 +1,9 @@
 # parket
 
 <div align="center">
+  <a href="https://travis-ci.org/ForsakenHarmony/parket">
+    <img src="https://travis-ci.org/ForsakenHarmony/parket.svg?branch=master" alt="travis">
+  </a>
   <a href="https://www.npmjs.org/package/parket">
     <img src="https://img.shields.io/npm/v/parket.svg" alt="npm">
   </a>
