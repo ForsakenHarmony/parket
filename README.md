@@ -82,7 +82,7 @@ instance.setLastName('Clancy');
 console.log(instance.fullname);
 
 // nested models also bubble up events to the parent
-instance.setNested(thing());
+instance.setNested(Person());
 
 instance.nested.setFirstName('wow');
 
