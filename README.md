@@ -98,7 +98,7 @@ import { Component } from 'preact';
 import { observe, connect, Provider } from 'parket/preact';
 
 // observe keeps the component updated to models in the prop
-@ovserve
+@observe
 class Observed extends Component {
   render({person}) {
     return (
