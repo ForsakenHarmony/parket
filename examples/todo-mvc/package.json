@@ -1,0 +1,34 @@
+{
+  "private": true,
+  "name": "todo-mvc",
+  "version": "0.0.0",
+  "license": "MIT",
+  "main": "src",
+  "scripts": {
+    "start": "if-env NODE_ENV=production && npm run -s serve || npm run -s dev",
+    "build": "preact build",
+    "serve": "preact build && preact serve",
+    "dev": "preact watch",
+    "lint": "eslint src"
+  },
+  "eslintConfig": {
+    "extends": "eslint-config-synacor"
+  },
+  "eslintIgnore": [
+    "build/*"
+  ],
+  "devDependencies": {
+    "eslint": "^4.5.0",
+    "eslint-config-synacor": "^1.1.0",
+    "if-env": "^1.0.0",
+    "preact-cli": "^2.0.0",
+    "remotedev": "^0.2.7"
+  },
+  "dependencies": {
+    "classnames": "^2.2.5",
+    "parket": "file:../..",
+    "preact": "^8.2.1",
+    "preact-compat": "^3.17.0",
+    "todomvc-app-css": "^2.1.0"
+  }
+}
