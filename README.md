@@ -48,7 +48,7 @@ const model = require('parket');
 ```js
 import model from 'parket';
 
-const Person = model({ // model returns a "constructor" function
+const Person = model('Person', { // model returns a "constructor" function
   initial: () => ({
     firstname: null,
     lastname: null,
@@ -74,7 +74,7 @@ const Person = model({ // model returns a "constructor" function
 const instance = Person({ firstname: 'Tom' });
 
 // you can subscribe to actions, patches (state updates) and snapshots (full state after actions)
-instance.subscribe('*', console.log);
+instance.onSnapshot(console.log);
 
 instance.setLastName('Clancy');
 

@@ -3,9 +3,12 @@
 
 node_modules
 npm-debug.log
+
 /dist
 /full
 /preact.js
 /preact.js.map
 /react.js
 /react.js.map
+/devtools.js
+/devtools.js.map

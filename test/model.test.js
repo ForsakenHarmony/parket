@@ -1,24 +1,29 @@
-import model from '../src';
+import model, { clearCache } from '../src';
 
 describe('model()', function() {
+  beforeEach(() => {
+    clearCache();
+  });
+
   it('should create a model', () => {
-    expect(model({ initial: {} }));
+    expect(model('Model', { initial: () => ({}) }));
   });
 
   it('should instantiate', () => {
-    const Model = model({ initial: {} });
+    const Model = model('Model', { initial: () => ({}) });
     const instance = Model();
 
     expect(instance).toMatchObject({
       getSnapshot: expect.any(Function),
       applySnapshot: expect.any(Function),
-      subscribe: expect.any(Function),
-      unsubscribe: expect.any(Function),
+      onPatch: expect.any(Function),
+      onAction: expect.any(Function),
+      onSnapshot: expect.any(Function),
     });
   });
 
   it('should have props, actions and views', () => {
-    const Person = model({
+    const Person = model('Person', {
       initial: () => ({
         firstname: 'Tom',
         lastname: 'Lennon',
@@ -55,10 +60,10 @@ describe('model()', function() {
   });
 
   it('should emit on change', () => {
-    const Model = model({
-      initial: {
+    const Model = model('Model', {
+      initial: () => ({
         test: 0,
-      },
+      }),
       actions: state => ({
         increment: () => {
           state.test++;
@@ -71,8 +76,8 @@ describe('model()', function() {
     const pSub = jest.fn();
     const aSub = jest.fn();
 
-    instance.subscribe('patch', pSub);
-    instance.subscribe('action', aSub);
+    instance.onPatch(pSub);
+    instance.onAction(aSub);
 
     instance.increment();
 
@@ -81,12 +86,12 @@ describe('model()', function() {
   });
 
   it('should get events from nested objects', function() {
-    const Model = model({
-      initial: {
+    const Model = model('Model', {
+      initial: () => ({
         nested: {
           test: 0,
         },
-      },
+      }),
       actions: state => ({
         increment: () => {
           state.nested.test++;
@@ -97,16 +102,16 @@ describe('model()', function() {
     const instance = Model();
 
     const sub = jest.fn();
-    instance.subscribe('patch', sub);
+    instance.onPatch(sub);
     instance.increment();
     expect(sub).toBeCalled();
   });
 
   it('should get events from nested models', function() {
-    const Nested = model({
-      initial: {
+    const Nested = model('Nested', {
+      initial: () => ({
         test: 0,
-      },
+      }),
       actions: state => ({
         increment: () => {
           state.test++;
@@ -114,7 +119,7 @@ describe('model()', function() {
       }),
     });
 
-    const Model = model({
+    const Model = model('Model', {
       initial: () => ({
         nested: Nested(),
       }),
@@ -123,17 +128,17 @@ describe('model()', function() {
     const instance = Model();
 
     const sub = jest.fn();
-    instance.subscribe('patch', sub);
+    instance.onPatch(sub);
     instance.nested.increment();
     expect(sub).toBeCalled();
   });
 
   it('should apply snapshots', function() {
-    const Person = model({
-      initial: {
+    const Person = model('Person', {
+      initial: () => ({
         firstname: 'John',
         lastname: 'Lennon',
-      },
+      }),
       views: state => ({
         fullname: () => `${state.firstname} ${state.lastname}`,
       }),

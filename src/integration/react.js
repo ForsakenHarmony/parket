@@ -13,13 +13,12 @@ export function observe(Child) {
     Component.call(this, props, context);
     const update = () => this.setState(EMPTY_OBJECT);
     this.componentDidMount = () => {
-      this[observedSymbol] = Object.values(props).filter(
-        prop => prop[modelSymbol]
-      );
-      this[observedSymbol].forEach(model => model.subscribe('patch', update));
+      this[observedSymbol] = Object.values(props)
+        .filter(prop => prop[modelSymbol])
+        .map(model => model.onPatch(update));
     };
     this.componentWillUnmount = () => {
-      this[observedSymbol].forEach(model => model.unsubscribe('patch', update));
+      this[observedSymbol].forEach(unsub => unsub());
     };
     this.render = () => createElement(Child, props);
   }
@@ -34,10 +33,10 @@ export function connect(Child) {
     const { store } = context;
     const update = () => this.setState(EMPTY_OBJECT);
     this.componentDidMount = () => {
-      store.subscribe('patch', update);
+      this.unsubscribe = store.onPatch(update);
     };
     this.componentWillUnmount = () => {
-      store.unsubscribe('patch', update);
+      this.unsubscribe();
     };
     this.render = () => createElement(Child, assign({ store }, props));
   }

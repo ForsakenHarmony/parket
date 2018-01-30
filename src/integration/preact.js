@@ -10,13 +10,12 @@ export function observe(Child) {
   function Wrapper(props) {
     const update = () => this.setState(EMPTY_OBJECT);
     this.componentDidMount = () => {
-      this[observedSymbol] = Object.values(props).filter(
-        prop => prop[modelSymbol]
-      );
-      this[observedSymbol].forEach(model => model.subscribe('patch', update));
+      this[observedSymbol] = Object.values(props)
+        .filter(prop => prop[modelSymbol])
+        .map(model => model.onPatch(update));
     };
     this.componentWillUnmount = () => {
-      this[observedSymbol].forEach(model => model.unsubscribe('patch', update));
+      this[observedSymbol].forEach(unsub => unsub());
     };
     this.render = props => h(Child, props);
   }
@@ -28,10 +27,10 @@ export function connect(Child) {
   function Wrapper(props, { store }) {
     const update = () => this.setState(EMPTY_OBJECT);
     this.componentDidMount = () => {
-      store.subscribe('patch', update);
+      this.unsubscribe = store.onPatch(update);
     };
     this.componentWillUnmount = () => {
-      store.unsubscribe('patch', update);
+      this.unsubscribe();
     };
     this.render = props => h(Child, assign({ store }, props));
   }
