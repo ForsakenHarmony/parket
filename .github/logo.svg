@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="170px" height="99px" viewBox="0 0 170 99" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
+    <title>Artboard</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="90.0716706%" y1="5.58870603%" x2="0%" y2="97.9171653%" id="linearGradient-1">
+            <stop stop-color="#FFC8CF" offset="0%"></stop>
+            <stop stop-color="#FFB8C8" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="0%" y1="0%" x2="90.4325451%" y2="0%" id="linearGradient-2">
+            <stop stop-color="#925331" offset="0%"></stop>
+            <stop stop-color="#E6AC62" stop-opacity="0.567113904" offset="100%"></stop>
+        </linearGradient>
+        <circle id="path-3" cx="37" cy="3" r="3"></circle>
+        <circle id="path-4" cx="25" cy="16" r="3"></circle>
+        <circle id="path-5" cx="12" cy="29" r="3"></circle>
+        <circle id="path-6" cx="37" cy="3" r="3"></circle>
+        <circle id="path-7" cx="25" cy="16" r="3"></circle>
+        <circle id="path-8" cx="12" cy="29" r="3"></circle>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="94.2360503%" id="linearGradient-9">
+            <stop stop-color="#925431" offset="0%"></stop>
+            <stop stop-color="#DEA27A" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Artboard">
+            <g id="new-business-office" transform="translate(85.000000, 38.000000) rotate(-270.000000) translate(-85.000000, -38.000000) translate(56.000000, -5.000000)">
+                <polygon id="Stroke-1" stroke="#915331" fill="url(#linearGradient-1)" stroke-linecap="round" stroke-linejoin="round" points="0 86 58 86 58 0 0 0"></polygon>
+                <g id="Group" transform="translate(0.000000, 11.000000)">
+                    <path d="M0,3 L37,3" id="Stroke-6" stroke="url(#linearGradient-2)" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M0,16 L24.5,16" id="Stroke-7" stroke="url(#linearGradient-2)" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M0,29 L12.2990013,29" id="Stroke-12" stroke="url(#linearGradient-2)" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <g id="Oval-Copy-474" transform="translate(37.000000, 3.000000) rotate(-90.000000) translate(-37.000000, -3.000000) ">
+                        <use fill="#A25F6A" fill-rule="evenodd" xlink:href="#path-3"></use>
+                        <circle stroke="#E89CA8" stroke-width="1.5" cx="37" cy="3" r="2.25"></circle>
+                        <use stroke="#FFC3CD" stroke-width="1" xlink:href="#path-3"></use>
+                    </g>
+                    <g id="Oval-Copy-477" transform="translate(25.000000, 16.000000) rotate(-90.000000) translate(-25.000000, -16.000000) ">
+                        <use fill="#A25F6A" fill-rule="evenodd" xlink:href="#path-4"></use>
+                        <circle stroke="#E89CA8" stroke-width="1.5" cx="25" cy="16" r="2.25"></circle>
+                        <use stroke="#FFC3CD" stroke-width="1" xlink:href="#path-4"></use>
+                    </g>
+                    <g id="Oval-Copy-478" transform="translate(12.000000, 29.000000) rotate(-90.000000) translate(-12.000000, -29.000000) ">
+                        <use fill="#A25F6A" fill-rule="evenodd" xlink:href="#path-5"></use>
+                        <circle stroke="#E89CA8" stroke-width="1.5" cx="12" cy="29" r="2.25"></circle>
+                        <use stroke="#FFC3CD" stroke-width="1" xlink:href="#path-5"></use>
+                    </g>
+                </g>
+                <g id="Group-Copy" transform="translate(25.000000, 66.000000) scale(-1, 1) rotate(-90.000000) translate(-25.000000, -66.000000) translate(5.000000, 50.000000)">
+                    <path d="M0,3 L37,3" id="Stroke-6" stroke="url(#linearGradient-2)" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M0,16 L24.5,16" id="Stroke-7" stroke="url(#linearGradient-2)" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M0,29 L12.2990013,29" id="Stroke-12" stroke="url(#linearGradient-2)" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <g id="Oval-Copy-474" transform="translate(37.000000, 3.000000) rotate(-90.000000) translate(-37.000000, -3.000000) ">
+                        <use fill="#A25F6A" fill-rule="evenodd" xlink:href="#path-6"></use>
+                        <circle stroke="#E89CA8" stroke-width="1.5" cx="37" cy="3" r="2.25"></circle>
+                        <use stroke="#FFC3CD" stroke-width="1" xlink:href="#path-6"></use>
+                    </g>
+                    <g id="Oval-Copy-477" transform="translate(25.000000, 16.000000) rotate(-90.000000) translate(-25.000000, -16.000000) ">
+                        <use fill="#A25F6A" fill-rule="evenodd" xlink:href="#path-7"></use>
+                        <circle stroke="#E89CA8" stroke-width="1.5" cx="25" cy="16" r="2.25"></circle>
+                        <use stroke="#FFC3CD" stroke-width="1" xlink:href="#path-7"></use>
+                    </g>
+                    <g id="Oval-Copy-478" transform="translate(12.000000, 29.000000) rotate(-90.000000) translate(-12.000000, -29.000000) ">
+                        <use fill="#A25F6A" fill-rule="evenodd" xlink:href="#path-8"></use>
+                        <circle stroke="#E89CA8" stroke-width="1.5" cx="12" cy="29" r="2.25"></circle>
+                        <use stroke="#FFC3CD" stroke-width="1" xlink:href="#path-8"></use>
+                    </g>
+                </g>
+            </g>
+            <path d="M59.0952381,83.1428571 C58.0714286,83.7857143 56.8095238,84.1904762 55.9761905,84.1904762 L53.2857143,84.1904762 L53.2857143,88.9761905 L51,88.9761905 L51,72.3333333 L55.9761905,72.3333333 C59.3095238,72.3333333 61.8095238,75.047619 61.8095238,78.1666667 C61.8095238,80.2619048 60.7380952,82.1190476 59.0952381,83.1428571 Z M53.2857143,74.6190476 L53.2857143,81.8809524 L55.9761905,81.8809524 C57.8571429,81.8809524 59.5,80.2619048 59.5,78.1666667 C59.5,76.2619048 57.8571429,74.6190476 55.9761905,74.6190476 L53.2857143,74.6190476 Z M73.2857143,77.0238095 L75.452381,77.0238095 L75.452381,88.952381 L73.2857143,88.952381 L73.2857143,87.6190476 C72.3095238,88.452381 71.0714286,88.952381 69.6666667,88.952381 C66.5238095,88.952381 63.952381,86.3333333 63.952381,83.0238095 C63.952381,79.7857143 66.5238095,77.1428571 69.6666667,77.1428571 C71.0714286,77.1428571 72.3095238,77.6428571 73.2857143,78.4761905 L73.2857143,77.0238095 Z M69.6666667,86.7857143 C71.5,86.7857143 73.0238095,85.3809524 73.2857143,83.547619 L73.2857143,82.547619 C73.0238095,80.7142857 71.5,79.3095238 69.6666667,79.3095238 C67.6666667,79.3095238 66.0238095,81 66.0238095,83.0238095 C66.0238095,85.0952381 67.6666667,86.7857143 69.6666667,86.7857143 Z M79.3809524,77.0238095 L79.3809524,78.5 C80.4047619,77.6666667 81.6428571,77.1428571 83.0714286,77.1428571 L83.0714286,79.2380952 C81,79.2380952 79.5714286,80.952381 79.3809524,82.9761905 L79.3809524,88.952381 L77.2380952,88.952381 L77.2380952,77.0238095 L79.3809524,77.0238095 Z M87.1904762,88.9285714 L87.2857143,88.9285714 L87.1904762,88.9285714 Z M87.1904762,88.9285714 L85.0238095,88.9285714 L85.0238095,71 L87.2857143,71 L87.2857143,84.0238095 L91.3809524,76.7142857 L94.0238095,76.7142857 L91.1666667,82 L95.1666667,88.9285714 L92.5714286,88.9285714 L89.6904762,84.0238095 L87.0952381,88.9285714 L87.1904762,88.9285714 Z M102.952381,77.0238095 C106.190476,77.0238095 108.809524,79.6904762 108.809524,83.0238095 C108.809524,83.4285714 108.785714,83.7619048 108.714286,84.0714286 L99.4285714,84.0714286 C99.8571429,85.6904762 101.285714,86.8333333 102.952381,86.8333333 C103.738095,86.8333333 104.404762,86.6190476 104.952381,86.2142857 L107.904762,86.2142857 C106.880952,87.9285714 105.047619,89 102.952381,89 C99.7857143,89 97.1428571,86.3571429 97.1428571,83.0238095 C97.1428571,79.6904762 99.7857143,77.0238095 102.952381,77.0238095 Z M102.952381,79.1904762 C101.261905,79.1904762 99.8809524,80.3571429 99.4285714,81.952381 L106.52381,81.952381 C106.095238,80.3809524 104.642857,79.1904762 102.952381,79.1904762 Z M115.880952,77.0238095 L119,77.0238095 L119,79.2857143 L115.880952,79.2857143 L115.880952,88.952381 L113.666667,88.952381 L113.666667,79.2857143 L110.428571,79.2857143 L110.428571,77.0238095 L113.666667,77.0238095 L113.666667,71.0952381 L115.880952,71.0952381 L115.880952,77.0238095 Z" id="Parket" stroke="url(#linearGradient-9)" fill="#FFC2CC"></path>
+        </g>
+    </g>
+</svg>

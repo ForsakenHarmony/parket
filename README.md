@@ -1,4 +1,8 @@
-# parket
+<h1 align="center">
+  <img src="https://github.com/ForsakenHarmony/parket/blob/master/.github/logo.svg?raw=true">
+</h1>
+
+<br />
 
 <div align="center">
   <a href="https://travis-ci.org/ForsakenHarmony/parket">
@@ -17,11 +21,10 @@
 
 <br>
 
- * Small (~1KB)
+ * Small (~1.5KB)
  * Immutable from the outside, mutable in actions
  * Reactive (state emits updates without explicit calls to i.e. `setState`)
  * Modular (you can nest models inside each other)
- * Open (state looks however you want it to look)
 
 ## Why?
 
@@ -47,8 +50,8 @@ const model = require('parket');
 
 ```js
 import model from 'parket';
-
-const Person = model('Person', { // model returns a "constructor" function
+// model returns a "constructor" function
+const Person = model('Person', { // name is used internally for serialisation
   initial: () => ({
     firstname: null,
     lastname: null,
@@ -79,7 +82,7 @@ instance.onSnapshot(console.log);
 instance.setLastName('Clancy');
 
 // views turn into cached getters
-console.log(instance.fullname);
+console.log(instance.fullname); // 'Tom Clancy'
 
 // nested models also bubble up events to the parent
 instance.setNested(Person());
@@ -143,6 +146,7 @@ import { observe, connect, Provider } from 'parket/react';
 
 * [Mobx State Tree for Inspiration](https://github.com/mobxjs/mobx-state-tree)
 * [unistore for the preact integration](https://github.com/developit/unistore/)
+* [Zouhir for the awesome logo](https://twitter.com/_zouhir)
 
 ## License
 
