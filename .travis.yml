@@ -2,3 +2,7 @@ language: node_js
 node_js:
   - stable
   - node
+script:
+  - npm run test-ci
+after_success:
+  - npm run coverall

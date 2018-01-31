@@ -8,6 +8,9 @@
   <a href="https://travis-ci.org/ForsakenHarmony/parket">
     <img src="https://travis-ci.org/ForsakenHarmony/parket.svg?branch=master" alt="travis">
   </a>
+  <a href='https://coveralls.io/github/tinchoz49/parket?branch=master'>
+    <img src='https://coveralls.io/repos/github/tinchoz49/parket/badge.svg?branch=master' alt='Coverage Status' />
+  </a>
   <a href="https://www.npmjs.org/package/parket">
     <img src="https://img.shields.io/npm/v/parket.svg" alt="npm">
   </a>

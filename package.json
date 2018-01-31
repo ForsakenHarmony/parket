@@ -8,7 +8,9 @@
   "umd:main": "dist/parket.umd.js",
   "scripts": {
     "test": "npm run build && npm run jest",
+    "test-ci": "npm run build && npm run jest -- --coverage",
     "jest": "jest",
+    "coverall": "cat ./coverage/lcov.info | coveralls",
     "build": "npm-run-all --silent -p build:*",
     "build:main": "microbundle",
     "build:integrations": "microbundle src/integration/*.js -o x.js -f cjs",
@@ -76,6 +78,7 @@
     "babel-plugin-jsx-pragmatic": "^1.0.2",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-env": "^1.6.1",
+    "coveralls": "^3.0.0",
     "cross-env": "^5.1.3",
     "cross-var": "^1.1.0",
     "husky": "^0.14.3",
@@ -102,6 +105,9 @@
     },
     "globals": {
       "NODE_ENV": "test"
-    }
+    },
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx}"
+    ]
   }
 }
