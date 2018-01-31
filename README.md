@@ -29,9 +29,9 @@
 ## Why?
 
 I was disappointed with all the current state management solutions.
-Then I found mobx-state-tree, which seemed like a gosent to me (ok not really, but I liked the concept), but it was pretty big in terms of filesize (mobx alone is big: 16.5kB).
+Then I found mobx-state-tree, which seemed like a godsend to me (ok not really, but I liked the concept), but it was pretty big in terms of file size (mobx alone is big: 16.5kB).
 So I thought it's surely possible to make a smaller version of it, that's how this started.
-And after 2 failed attempts I can finally say: **Here it is in all of it's "glory".**
+And after 2 failed attempts I can finally say: **Here it is in all of its "glory".**
 
 ## Installation
 
@@ -51,7 +51,7 @@ const model = require('parket');
 ```js
 import model from 'parket';
 // model returns a "constructor" function
-const Person = model('Person', { // name is used internally for serialisation
+const Person = model('Person', { // name is used internally for serialization
   initial: () => ({
     firstname: null,
     lastname: null,
