@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="https://github.com/ForsakenHarmony/parket/blob/master/.github/logo.svg?raw=true">
+  <img src="https://github.com/ForsakenHarmony/parket/blob/master/.github/logo.png?raw=true">
 </h1>
 
 <br />
