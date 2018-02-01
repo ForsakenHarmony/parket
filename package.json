@@ -14,29 +14,8 @@
     "build:integrations": "microbundle src/integration/*.js -o x.js -f cjs",
     "build:devtools": "microbundle src/devtools.js -o devtools.js -f cjs",
     "prepare": "npm t",
-    "release": "np --no-cleanup",
     "precommit": "lint-staged",
-    "prettier": "prettier --write {src,test,examples/**/src}/**/*.js devtools.js"
-  },
-  "babel": {
-    "presets": [
-      [
-        "env",
-        {
-          "targets": {
-            "node": true
-          }
-        }
-      ]
-    ],
-    "plugins": [
-      [
-        "transform-react-jsx",
-        {
-          "pragma": "h"
-        }
-      ]
-    ]
+    "prettier": "prettier --write {src,test,examples/**/src}/**/*.js"
   },
   "prettier": {
     "singleQuote": true,
@@ -56,7 +35,9 @@
     "preact.js",
     "preact.js.map",
     "react.js",
-    "react.js.map"
+    "react.js.map",
+    "devtools.js",
+    "devtools.js.map"
   ],
   "author": "Leah <me@hrmny.pw>",
   "license": "MIT",

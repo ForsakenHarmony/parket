@@ -48,6 +48,10 @@ const model = require('parket');
 
 ## Usage
 
+Note: This library uses Proxies and Symbols which you might have to polyfill to support older browers
+
+### Basic example
+
 ```js
 import model from 'parket';
 // model returns a "constructor" function
@@ -77,7 +81,10 @@ const Person = model('Person', { // name is used internally for serialization
 const instance = Person({ firstname: 'Tom' });
 
 // you can subscribe to actions, patches (state updates) and snapshots (full state after actions)
-instance.onSnapshot(console.log);
+const unsubscribe = instance.onSnapshot(console.log);
+
+// you can unsubscribe by calling the function returned by the listener
+// unsubscribe();
 
 instance.setLastName('Clancy');
 
@@ -94,33 +101,51 @@ instance.nested.setFirstName('wow');
 console.log(instance.getSnapshot());
 ```
 
-### preact
+### Async example
 
-```jsx
+```js
+const Async = model('Async', {
+  initial: () => ({
+    loading: false,
+    result: null,
+  }),
+  actions: self => ({
+    async doSomethingAsync() { // actions can be async, parket doesn't care
+      self.loading = true;
+      self.result = await somethingAsync(); // be aware that you should handle errors
+      self.loading = false;
+    },
+  })
+});
+```
+
+### preact / react
+
+```js
 import { Component } from 'preact';
-import { observe, connect, Provider } from 'parket/preact';
+import { observe, connect, Provider } from 'parket/preact'; // or 'parket/react'
 
 // observe keeps the component updated to models in the prop
 @observe
 class Observed extends Component {
-  render({person}) {
+  render({person}) { // if you're using react, props don't get passed to render so you have to use `const {person} = this.props;`
     return (
       <div>
         <h1>{person.fullname}</h1>
       </div>
-    )
+    );
   }
 }
 
 // connect inserts the store/instance into props
 @connect
 class Person extends Component {
-  render({store}) {
+  render({store}) { // if you're using react, props don't get passed to render so you have to use `const {store} = this.props;`
     return (
       <div>
         <h1>{store.fullname}</h1>
       </div>
-    )
+    );
   }
 }
 
@@ -133,13 +158,6 @@ const root = () => (
     </div>
   </Provider>
 );
-```
-
-### react
-
-```js
-// same api
-import { observe, connect, Provider } from 'parket/react';
 ```
 
 ## Credits
