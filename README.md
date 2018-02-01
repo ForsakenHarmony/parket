@@ -77,7 +77,10 @@ const Person = model('Person', { // name is used internally for serialization
 const instance = Person({ firstname: 'Tom' });
 
 // you can subscribe to actions, patches (state updates) and snapshots (full state after actions)
-instance.onSnapshot(console.log);
+const disposer = instance.onSnapshot(console.log);
+
+// you can dispose event with disposer
+// disposer();
 
 instance.setLastName('Clancy');
 
