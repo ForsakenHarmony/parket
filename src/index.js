@@ -221,7 +221,7 @@ const model = (name, { initial, actions, views }) => {
       }
 
       // update the cache on change
-      emitter.on('*', () => {
+      emitter.on('patch', () => {
         for (let key of keys) {
           cache[key] = boundViews[key]();
         }
