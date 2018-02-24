@@ -43,6 +43,7 @@ function setUpObject(obj, emit, symbol, path, parent = obj) {
   }
   if (obj[modelSymbol] && obj !== parent) {
     obj[parentSymbol](emit, parent, path);
+    return obj;
   } else {
     obj[apc] =
       (obj[apc] && obj[apc][symbol]) ||
@@ -235,8 +236,8 @@ const model = (name, { initial, actions, views }) => {
   return obj => instantiate(obj)[vpc];
 };
 
+export default model;
+
 export function clearCache() {
   modelMap.clear();
 }
-
-export default model;

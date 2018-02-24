@@ -22,6 +22,39 @@ describe('model()', function() {
     });
   });
 
+  it('should instantiate with objects / arrays in initial state', () => {
+    const Model = model('Model', {
+      initial: () => ({
+        obj: {
+          test: true,
+        },
+        arr: [1, 2, 3],
+      }),
+    });
+    const instance = Model();
+    expect(instance);
+  });
+
+  it('should instantiate with objects / arrays in nested initial state', () => {
+    const Nested = model('Nested', {
+      initial: () => ({
+        obj: {
+          test: true,
+        },
+        arr: [1, 2, 3],
+      }),
+    });
+
+    const Model = model('Model', {
+      initial: () => ({
+        nested: Nested(),
+      }),
+    });
+
+    const instance = Model();
+    expect(instance);
+  });
+
   it('should have props, actions and views', () => {
     const Person = model('Person', {
       initial: () => ({
