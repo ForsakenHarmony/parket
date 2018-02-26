@@ -1,6 +1,8 @@
 import { modelName } from './index';
 
 export default function connectReduxDevtools(model) {
+  if (!window.__REDUX_DEVTOOLS_EXTENSION__) return;
+
   const devtools = window.__REDUX_DEVTOOLS_EXTENSION__.connect({
     name: model[modelName],
   });
