@@ -14,7 +14,7 @@ export function observe(Child) {
     const update = () => this.setState(EMPTY_OBJECT);
     this.componentDidMount = () => {
       this[observedSymbol] = Object.values(props)
-        .filter(prop => prop[modelSymbol])
+        .filter(prop => prop.__p_model && prop.onPatch)
         .map(model => model.onPatch(update));
     };
     this.componentWillUnmount = () => {
