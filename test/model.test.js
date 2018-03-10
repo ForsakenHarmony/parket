@@ -183,4 +183,52 @@ describe('model()', function() {
 
     expect(instance.fullname).toBe('Tom Clancy');
   });
+
+  it('should get the root in nested models', () => {
+    const Model2 = model('M1', {
+      initial: () => ({}),
+      actions: self => ({
+        root() {
+          return self.getRoot().thing;
+        },
+      }),
+    });
+
+    const Model1 = model('M1', {
+      initial: () => ({
+        nest: Model2(),
+      }),
+      actions: self => ({
+        root() {
+          return self.getRoot().thing;
+        },
+      }),
+    });
+
+    const Model = model('M', {
+      initial: () => ({
+        nest: Model1(),
+        thing: 'root',
+      }),
+    });
+
+    const instance = Model();
+
+    debugger;
+    expect(instance.nest.root()).toBe('root');
+    expect(instance.nest.nest.root()).toBe('root');
+  });
+
+  // it('should call init when instantiated', () => {
+  //   const init = jest.fn();
+  //
+  //   const Model = model('Model', {
+  //     initial: () => ({}),
+  //     actions: state => ({
+  //       init,
+  //     }),
+  //   });
+  //   Model();
+  //   expect(init).toBeCalled();
+  // });
 });

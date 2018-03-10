@@ -11,28 +11,29 @@ const objKeys = Object.keys.bind(Object);
 
 function diff(oldObj, newObj, whitelist) {
   if (oldObj === newObj) return oldObj;
-  const keys = objKeys(oldObj).reduce(
-    (acc, val) => (~acc.indexOf(val) ? acc : acc.concat(val)),
-    objKeys(newObj)
-  );
-  keys.forEach(key => {
-    if (~whitelist.indexOf(key)) return;
-    const oldVal = oldObj[key];
-    const newVal = newObj[key];
-    if (oldVal === newVal) return oldObj;
-    if (
-      oldVal != null &&
-      newVal != null &&
-      typeof oldVal === 'object' &&
-      typeof newVal === 'object'
-    ) {
-      oldVal[modelSymbol]
-        ? oldVal.applySnapshot(newVal, true)
-        : diff(oldVal, newVal, whitelist);
-    } else {
-      oldObj[apc][key] = newVal;
-    }
-  });
+  objKeys(oldObj)
+    .reduce(
+      (acc, val) => (~acc.indexOf(val) ? acc : acc.concat(val)),
+      objKeys(newObj)
+    )
+    .forEach(key => {
+      if (~whitelist.indexOf(key)) return;
+      const oldVal = oldObj[key];
+      const newVal = newObj[key];
+      if (oldVal === newVal) return oldObj;
+      if (
+        oldVal != null &&
+        newVal != null &&
+        typeof oldVal === 'object' &&
+        typeof newVal === 'object'
+      ) {
+        oldVal[modelSymbol]
+          ? oldVal.applySnapshot(newVal, true)
+          : diff(oldVal, newVal, whitelist);
+      } else {
+        oldObj[apc][key] = newVal;
+      }
+    });
 }
 
 function setUpObject(obj, emit, symbol, path, parent = obj) {
@@ -158,7 +159,7 @@ const model = (name, { initial, actions, views }) => {
         return parent;
       },
       getRoot() {
-        return parent ? parent.getRoot() === null && parent : null;
+        return parent ? (parent.getRoot() ? parent.getRoot() : parent) : null;
       },
     };
 
@@ -176,11 +177,8 @@ const model = (name, { initial, actions, views }) => {
 
     state = setUpObject(state, emit, symbol, '');
 
-    const viewProxy = state[vpc];
-    const actionProxy = state[apc];
-
     if (actions) {
-      const boundActions = actions(actionProxy);
+      const boundActions = actions(state[apc]);
       const keys = objKeys(boundActions);
 
       const emitSnapshot = (name, args) => {
@@ -207,27 +205,36 @@ const model = (name, { initial, actions, views }) => {
     }
 
     if (views) {
-      const boundViews = views(viewProxy);
+      const boundViews = views(state[vpc]);
       const keys = objKeys(boundViews);
-      const cache = {};
+      // r = refresh on get, v = value
+      // I don't trust uglify here
+      const caches = {};
 
       for (let key of keys) {
-        const viewFn = boundViews[key];
-
         Object.defineProperty(state, key, {
-          get: () => cache[key],
+          get: () => {
+            const cache = caches[key];
+            if (cache.r) {
+              cache.r = false;
+              cache.v = boundViews[key]();
+            }
+            return cache.v;
+          },
           configurable: false,
         });
-        cache[key] = viewFn();
+        caches[key] = { v: boundViews[key](), r: false };
       }
 
       // update the cache on change
-      emitter.on('patch', () => {
+      state.onPatch(() => {
         for (let key of keys) {
-          cache[key] = boundViews[key]();
+          caches[key].r = true;
         }
       });
     }
+
+    // typeof state.init === 'function' && state.init();
 
     return state;
   };
