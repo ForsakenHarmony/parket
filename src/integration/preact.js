@@ -1,8 +1,7 @@
 import { Component, h } from 'preact';
 
-import { observedSymbol } from '../symbols';
-
-import { assign } from '../util';
+import { observed } from '../symbols.ts';
+import { assign } from '../util.ts';
 
 const EMPTY_OBJECT = {};
 
@@ -10,12 +9,12 @@ export function observe(Child) {
   function Wrapper(props) {
     const update = () => this.setState(EMPTY_OBJECT);
     this.componentDidMount = () => {
-      this[observedSymbol] = Object.values(props)
+      this[observed] = Object.values(props)
         .filter(prop => prop.__p_model && prop.onPatch)
         .map(model => model.onPatch(update));
     };
     this.componentWillUnmount = () => {
-      this[observedSymbol].forEach(unsub => unsub());
+      this[observed].forEach(unsub => unsub());
     };
     this.render = props => h(Child, props);
   }

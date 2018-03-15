@@ -12,3 +12,6 @@ npm-debug.log
 /react.js.map
 /devtools.js
 /devtools.js.map
+
+package-lock.json
+.rpt2_cache

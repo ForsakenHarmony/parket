@@ -1,6 +1,7 @@
 import { Component, Children, createElement } from 'react';
-import { assign } from '../util';
-import { modelSymbol, observedSymbol } from '../symbols';
+
+import { observed } from '../symbols.ts';
+import { assign } from '../util.ts';
 
 const CONTEXT_TYPES = {
   store: () => {},
@@ -13,12 +14,12 @@ export function observe(Child) {
     Component.call(this, props, context);
     const update = () => this.setState(EMPTY_OBJECT);
     this.componentDidMount = () => {
-      this[observedSymbol] = Object.values(props)
+      this[observed] = Object.values(props)
         .filter(prop => prop.__p_model && prop.onPatch)
         .map(model => model.onPatch(update));
     };
     this.componentWillUnmount = () => {
-      this[observedSymbol].forEach(unsub => unsub());
+      this[observed].forEach(unsub => unsub());
     };
     this.render = () => createElement(Child, props);
   }

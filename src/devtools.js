@@ -1,4 +1,4 @@
-import { modelName } from './index';
+import { modelName } from './symbols.ts';
 
 export default function connectReduxDevtools(model) {
   if (!window.__REDUX_DEVTOOLS_EXTENSION__) return;

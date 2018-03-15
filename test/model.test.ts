@@ -61,12 +61,12 @@ describe('model()', function() {
         firstname: 'Tom',
         lastname: 'Lennon',
       }),
-      actions: state => ({
-        setFirstName(first) {
-          state.firstname = first;
+      actions: self => ({
+        setFirstName(first: string) {
+          self.firstname = first;
         },
-        setLastName(last) {
-          state.lastname = last;
+        setLastName(last: string) {
+          self.lastname = last;
         },
       }),
       views: state => ({

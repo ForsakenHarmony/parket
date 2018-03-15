@@ -1,26 +1,129 @@
-import mitt from 'mitt';
+// @ts-ignore
+// import mitt from 'mitt';
 
-import { modelSymbol, parentSymbol, apc, vpc } from './symbols';
+export type EventHandler = (event?: any) => void;
+export type WildCardEventHandler = (type: string, event?: any) => void;
+export type Handler = EventHandler | WildCardEventHandler;
+
+// A map of event types and their corresponding event handlers.
+export type EventHandlerMap = {
+  [type: string]: Handler[];
+};
+
+export interface Emitter {
+  on(type: string, handler: Handler): void;
+  off(type: string, handler: Handler): void;
+  emit(type: string, evt: any): void;
+}
+
+/** Mitt: Tiny (~200b) functional event emitter / pubsub.
+ *  @name mitt
+ *  @returns {Emitter}
+ */
+export function mitt(all: EventHandlerMap = Object.create(null)): Emitter {
+  return {
+    /**
+     * Register an event handler for the given type.
+     *
+     * @param  {String} type	Type of event to listen for, or `"*"` for all events
+     * @param  {Function} handler Function to call in response to given event
+     * @memberOf mitt
+     */
+    on(type: string, handler: Handler) {
+      (all[type] || (all[type] = [])).push(handler);
+    },
+
+    /**
+     * Remove an event handler for the given type.
+     *
+     * @param  {String} type	Type of event to unregister `handler` from, or `"*"`
+     * @param  {Function} handler Handler function to remove
+     * @memberOf mitt
+     */
+    off(type: string, handler: Handler) {
+      if (all[type]) {
+        all[type].splice(all[type].indexOf(handler) >>> 0, 1);
+      }
+    },
+
+    /**
+     * Invoke all handlers for the given type.
+     * If present, `"*"` handlers are invoked after type-matched handlers.
+     *
+     * @param {String} type  The event type to invoke
+     * @param {Any} [evt]  Any value (object is recommended and powerful), passed to each handler
+     * @memberOf mitt
+     */
+    emit(type: string, evt: any) {
+      (all[type] || []).slice().map((handler: EventHandler) => {
+        handler(evt);
+      });
+      (all['*'] || []).slice().map((handler: WildCardEventHandler) => {
+        handler(type, evt);
+      });
+    },
+  };
+}
+
+import { modelSymbol, parentSymbol, apc, vpc, modelName } from './symbols';
 import { assign } from './util';
-
-export const modelName = '__p_model';
 
 const modelMap = new Map();
 
 const objKeys = Object.keys.bind(Object);
 
-function diff(oldObj, newObj, whitelist) {
-  if (oldObj === newObj) return oldObj;
+export type EmitFn = (evt: string, val: Event) => void;
+
+export type ModelCommons = {
+  onAction: (fn: EventHandler, after?: boolean) => Function;
+  onSnapshot: (fn: EventHandler) => Function;
+  onPatch: (fn: EventHandler) => Function;
+  getSnapshot: () => object;
+  applySnapshot: (snapshot: object, dontemit?: boolean) => void;
+  getParent: () => Model<any> | null;
+  getRoot: () => Model<any>;
+};
+
+export type FnMap = { [index: string]: Function };
+
+export type Model<S> = ModelCommons & {
+  [vpc]: Model<S>;
+  [apc]: Model<S>;
+  [modelName]: string;
+  [modelSymbol]: boolean;
+  [parentSymbol]: (emit: EmitFn, _parent: Model<S>, _path: string) => void;
+  [index: string]: any;
+} & S;
+
+export type Event = {
+  path?: string;
+  value?: string;
+  [index: string]: any;
+};
+
+export type ModelArgs<S> = {
+  initial: () => S;
+  actions?: (self: Model<S>) => FnMap;
+  views?: (self: Model<S>) => FnMap;
+};
+
+function diff<S>(
+  oldObj: Model<S>,
+  newObj: { [index: string]: any },
+  whitelist: string[]
+) {
+  if (oldObj === newObj) return;
   objKeys(oldObj)
     .reduce(
-      (acc, val) => (~acc.indexOf(val) ? acc : acc.concat(val)),
+      (acc: string[], val: string) =>
+        ~acc.indexOf(val) ? acc : acc.concat(val),
       objKeys(newObj)
     )
-    .forEach(key => {
+    .forEach((key: string) => {
       if (~whitelist.indexOf(key)) return;
       const oldVal = oldObj[key];
       const newVal = newObj[key];
-      if (oldVal === newVal) return oldObj;
+      if (oldVal === newVal) return;
       if (
         oldVal != null &&
         newVal != null &&
@@ -36,7 +139,13 @@ function diff(oldObj, newObj, whitelist) {
     });
 }
 
-function setUpObject(obj, emit, symbol, path, parent = obj) {
+function setUpObject<S>(
+  obj: Model<S>,
+  emit: EmitFn,
+  symbol: Symbol,
+  path: string,
+  parent = obj
+) {
   if (obj[modelName] && !obj[modelSymbol]) {
     obj = modelMap.has(obj[modelName])
       ? modelMap.get(obj[modelName])(obj)
@@ -47,10 +156,14 @@ function setUpObject(obj, emit, symbol, path, parent = obj) {
     return obj;
   } else {
     obj[apc] =
-      (obj[apc] && obj[apc][symbol]) ||
+      (obj[apc] &&
+        // @ts-ignore
+        obj[apc][symbol]) ||
       cProxy(obj, emit, symbol, false, path, parent);
     obj[vpc] =
-      (obj[vpc] && obj[vpc][symbol]) ||
+      (obj[vpc] &&
+        // @ts-ignore
+        obj[vpc][symbol]) ||
       cProxy(obj, emit, symbol, true, path, parent);
   }
 
@@ -64,9 +177,16 @@ function setUpObject(obj, emit, symbol, path, parent = obj) {
   return obj;
 }
 
-function cProxy(obj, emit, symbol, view, path, parent) {
+function cProxy<S>(
+  obj: object,
+  emit: EmitFn,
+  symbol: Symbol,
+  view: boolean,
+  path: string,
+  parent: Model<S>
+) {
   return new Proxy(obj, {
-    get(target, prop) {
+    get(target: Model<S>, prop) {
       if (prop === symbol) return true;
       if (typeof prop === 'symbol') return target[prop];
       const res = target[prop];
@@ -77,11 +197,15 @@ function cProxy(obj, emit, symbol, view, path, parent) {
         res
       );
     },
-    set(target, prop, val) {
+    set(target: Model<S>, prop: string, val) {
       if (view) {
         throw new Error("You can't modify the state outside of actions");
       }
       if (target[prop] === val) return true;
+      if (typeof prop === 'symbol') {
+        target[prop] = val;
+        return true;
+      }
       if (val != null && typeof val === 'object') {
         val = setUpObject(
           val,
@@ -98,12 +222,12 @@ function cProxy(obj, emit, symbol, view, path, parent) {
   });
 }
 
-function subscribe(emitter, evt, fn) {
+function subscribe(emitter: Emitter, evt: string, fn: EventHandler) {
   emitter.on(evt, fn);
   return () => emitter.off(evt, fn);
 }
 
-const model = (name, { initial, actions, views }) => {
+function model<S>(name: string, { initial, actions, views }: ModelArgs<S>) {
   if (typeof initial !== 'function') {
     throw new Error(
       'You have to supply a function that returns the initial state'
@@ -116,16 +240,16 @@ const model = (name, { initial, actions, views }) => {
     throw new TypeError('views has to be a function');
   }
 
-  const instantiate = obj => {
+  function instantiate(obj: object = {}) {
     const symbol = Symbol('model');
 
     let path = '';
-    let parentEmit = null;
-    let parent = null;
+    let parentEmit: EmitFn | null = null;
+    let parent: Model<any> | null = null;
     const emitter = mitt();
-    let state = assign(initial(), obj);
+    let state = assign(initial(), obj) as Model<S>;
 
-    const emit = (evt, val) => {
+    const emit: EmitFn = (evt, val) => {
       if (evt === 'snapshot') {
         val = common.getSnapshot();
       } else if (val.path != null) {
@@ -135,9 +259,9 @@ const model = (name, { initial, actions, views }) => {
       parentEmit && parentEmit(evt, val);
     };
 
-    const whitelist = [];
+    const whitelist: string[] = [];
 
-    const common = {
+    const common: ModelCommons = {
       onAction(fn, after) {
         const evt = after ? 'action-complete' : 'action';
         return subscribe(emitter, evt, fn);
@@ -159,7 +283,7 @@ const model = (name, { initial, actions, views }) => {
         return parent;
       },
       getRoot() {
-        return parent ? (parent.getRoot() ? parent.getRoot() : parent) : null;
+        return parent ? (parent.getRoot() ? parent.getRoot() : parent) : state;
       },
     };
 
@@ -168,7 +292,11 @@ const model = (name, { initial, actions, views }) => {
     assign(state, common);
 
     state[modelSymbol] = true;
-    state[parentSymbol] = (emit, _parent, _path) => {
+    state[parentSymbol] = (
+      emit: EmitFn,
+      _parent: Model<any>,
+      _path: string
+    ) => {
       parentEmit = emit;
       path = _path;
       parent = _parent;
@@ -181,7 +309,7 @@ const model = (name, { initial, actions, views }) => {
       const boundActions = actions(state[apc]);
       const keys = objKeys(boundActions);
 
-      const emitSnapshot = (name, args) => {
+      const emitSnapshot = (name: string, args: any[]) => {
         emit('action-complete', { name, path: '', args });
         emit('snapshot', {});
       };
@@ -189,7 +317,7 @@ const model = (name, { initial, actions, views }) => {
       for (let key of keys) {
         const action = boundActions[key];
 
-        state[key] = (...args) => {
+        state[key] = (...args: any[]) => {
           emit('action', { name: key, path: '', args: args });
           const res = action.apply(null, args);
           if (res != null && res.then) {
@@ -209,7 +337,7 @@ const model = (name, { initial, actions, views }) => {
       const keys = objKeys(boundViews);
       // r = refresh on get, v = value
       // I don't trust uglify here
-      const caches = {};
+      const caches: { [index: string]: { v: any; r: boolean } } = {};
 
       for (let key of keys) {
         Object.defineProperty(state, key, {
@@ -237,11 +365,11 @@ const model = (name, { initial, actions, views }) => {
     // typeof state.init === 'function' && state.init();
 
     return state;
-  };
+  }
 
   modelMap.set(name, instantiate);
-  return obj => instantiate(obj)[vpc];
-};
+  return (obj?: object) => instantiate(obj)[vpc];
+}
 
 export default model;
 
