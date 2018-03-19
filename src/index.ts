@@ -155,16 +155,20 @@ function setUpObject<S>(
     obj[parentSymbol](emit, parent, path);
     return obj;
   } else {
-    obj[apc] =
-      (obj[apc] &&
-        // @ts-ignore
-        obj[apc][symbol]) ||
-      cProxy(obj, emit, symbol, false, path, parent);
-    obj[vpc] =
-      (obj[vpc] &&
-        // @ts-ignore
-        obj[vpc][symbol]) ||
-      cProxy(obj, emit, symbol, true, path, parent);
+    // have to ignore errors because typescript doesn't like indexing with symbols
+    if (
+      !obj[apc] ||
+      // @ts-ignore
+      !obj[apc][symbol]
+    )
+      obj[apc] = cProxy(obj, emit, symbol, false, path, parent);
+
+    if (
+      !obj[vpc] ||
+      // @ts-ignore
+      !obj[vpc][symbol]
+    )
+      obj[vpc] = cProxy(obj, emit, symbol, true, path, parent);
   }
 
   for (let prop in obj) {
@@ -178,7 +182,7 @@ function setUpObject<S>(
 }
 
 function cProxy<S>(
-  obj: object,
+  obj: Model<S>,
   emit: EmitFn,
   symbol: Symbol,
   view: boolean,
