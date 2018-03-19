@@ -2,15 +2,15 @@
 // import mitt from 'mitt';
 
 export type EventHandler = (event?: any) => void;
-export type WildCardEventHandler = (type: string, event?: any) => void;
-export type Handler = EventHandler | WildCardEventHandler;
+type WildCardEventHandler = (type: string, event?: any) => void;
+type Handler = EventHandler | WildCardEventHandler;
 
 // A map of event types and their corresponding event handlers.
-export type EventHandlerMap = {
+type EventHandlerMap = {
   [type: string]: Handler[];
 };
 
-export interface Emitter {
+interface Emitter {
   on(type: string, handler: Handler): void;
   off(type: string, handler: Handler): void;
   emit(type: string, evt: any): void;
@@ -20,7 +20,7 @@ export interface Emitter {
  *  @name mitt
  *  @returns {Emitter}
  */
-export function mitt(all: EventHandlerMap = Object.create(null)): Emitter {
+function mitt(all: EventHandlerMap = Object.create(null)): Emitter {
   return {
     /**
      * Register an event handler for the given type.
@@ -190,6 +190,9 @@ function cProxy<S>(
       if (prop === symbol) return true;
       if (typeof prop === 'symbol') return target[prop];
       const res = target[prop];
+      // check if there are other built in constructors that need this
+      if (target instanceof Date && typeof res === 'function')
+        return res.bind(target);
       return (
         (res != null &&
           typeof res === 'object' &&
@@ -227,7 +230,10 @@ function subscribe(emitter: Emitter, evt: string, fn: EventHandler) {
   return () => emitter.off(evt, fn);
 }
 
-function model<S>(name: string, { initial, actions, views }: ModelArgs<S>) {
+function model<S>(
+  name: string,
+  { initial, actions, views }: ModelArgs<S>
+): (obj?: object | undefined) => Model<S> {
   if (typeof initial !== 'function') {
     throw new Error(
       'You have to supply a function that returns the initial state'
@@ -368,7 +374,7 @@ function model<S>(name: string, { initial, actions, views }: ModelArgs<S>) {
   }
 
   modelMap.set(name, instantiate);
-  return (obj?: object) => instantiate(obj)[vpc];
+  return obj => instantiate(obj)[vpc];
 }
 
 export default model;

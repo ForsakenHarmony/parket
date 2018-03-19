@@ -166,6 +166,42 @@ describe('model()', function() {
     expect(sub).toBeCalled();
   });
 
+  it('should update on array methods', function() {
+    const Model = model('Model', {
+      initial: () => ({
+        arr: [] as any[],
+      }),
+      actions: self => ({
+        pushToArr(thing: any) {
+          self.arr.push(thing);
+        },
+      }),
+      views: self => ({
+        firstElem: () => self.arr[0],
+      }),
+    });
+
+    const instance = Model();
+
+    const sub = jest.fn();
+    instance.onPatch(sub);
+    instance.pushToArr(2);
+    expect(sub).toBeCalled();
+    expect(instance.firstElem).toBe(2);
+  });
+
+  it('should handle dates', function() {
+    const Model = model('Model', {
+      initial: () => ({
+        date: new Date(),
+      }),
+    });
+
+    const instance = Model();
+    instance.getSnapshot();
+    instance.date.getDate();
+  });
+
   it('should apply snapshots', function() {
     const Person = model('Person', {
       initial: () => ({
