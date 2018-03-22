@@ -15,3 +15,5 @@ npm-debug.log
 
 package-lock.json
 .rpt2_cache
+
+*.log
