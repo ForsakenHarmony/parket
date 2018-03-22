@@ -3,6 +3,7 @@
   "compilerOptions": {
     "module": "esnext",
     "moduleResolution": "node",
+    "target": "es5",
     "sourceMap": true,
     "jsx": "react",
     "jsxFactory": "h",
@@ -14,7 +15,7 @@
     "noImplicitThis": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "lib": ["es2015"],
+    "lib": ["es6", "dom"],
     "outDir": "dist/es"
   },
   "include": ["src/**/*.ts"]
