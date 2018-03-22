@@ -250,7 +250,6 @@ describe('model()', function() {
 
     const instance = Model();
 
-    debugger;
     expect(instance.nest.root()).toBe('root');
     expect(instance.nest.nest.root()).toBe('root');
   });
