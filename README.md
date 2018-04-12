@@ -48,7 +48,7 @@ const model = require('parket');
 
 ## Usage
 
-Note: This library uses Proxies and Symbols which you might have to polyfill to support older browers
+Note: This library uses Proxies and Symbols. Proxies cannot be fully polyfilled so you have to target modern browers which support Proxies.
 
 ### Basic example
 
