@@ -8,8 +8,9 @@
   "main": "dist/parket.js",
   "umd:main": "dist/parket.umd.js",
   "scripts": {
-    "test": "npm run build && npm run jest",
-    "jest": "jest",
+    "test": "npm run build && jest",
+    "test-ci": "npm run build && jest --coverage",
+    "coveralls": "cat ./coverage/lcov.info | coveralls",
     "build": "npm-run-all --silent -p build:*",
     "build:ts": "tsc",
     "build:main": "microbundle src/default-wrap.ts -f umd,cjs",
@@ -60,6 +61,7 @@
     "babel-plugin-jsx-pragmatic": "^1.0.2",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-env": "^1.6.1",
+    "coveralls": "^3.0.0",
     "husky": "^0.14.3",
     "jest": "^22.1.4",
     "lint-staged": "^6.0.1",
@@ -96,6 +98,9 @@
       "jsx",
       "json",
       "node"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.{ts,tsx,js,jsx}"
     ]
   }
 }
