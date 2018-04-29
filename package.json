@@ -8,11 +8,12 @@
   "main": "dist/parket.js",
   "umd:main": "dist/parket.umd.js",
   "scripts": {
-    "test": "npm run build && npm run jest",
-    "jest": "jest",
-    "build": "run-p --silent build:*",
+    "test": "npm run build && jest",
+    "test-ci": "npm run build && jest --coverage",
+    "coveralls": "cat ./coverage/lcov.info | coveralls",
+    "build": "npm-run-all --silent -p build:*",
     "build:ts": "tsc",
-    "build:main": "microbundle -f umd,cjs",
+    "build:main": "microbundle src/default-wrap.ts -f umd,cjs",
     "build:integrations": "microbundle src/integration/*.js -o x.js -f cjs",
     "build:devtools": "microbundle src/devtools.js -o devtools.js -f cjs",
     "prepare": "npm t",
@@ -60,10 +61,11 @@
     "babel-plugin-jsx-pragmatic": "^1.0.2",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-env": "^1.6.1",
+    "coveralls": "^3.0.0",
     "husky": "^0.14.3",
     "jest": "^22.1.4",
     "lint-staged": "^7.0.0",
-    "microbundle": "^0.4.1",
+    "microbundle": "^0.4.4",
     "np": "^2.18.3",
     "npm-run-all": "^4.1.2",
     "preact": "^8.2.7",
@@ -96,6 +98,9 @@
       "jsx",
       "json",
       "node"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.{ts,tsx,js,jsx}"
     ]
   }
 }
