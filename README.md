@@ -14,6 +14,9 @@
   <a href="https://www.npmjs.org/package/parket">
     <img src="https://img.shields.io/npm/v/parket.svg" alt="npm">
   </a>
+  <a href="https://greenkeeper.io/">
+    <img src="https://badges.greenkeeper.io/ForsakenHarmony/parket.svg" alt="Greenkeeper badge" />
+  </a>
   <a href="https://www.npmjs.com/package/parket">
     <img src="https://img.shields.io/npm/dm/parket.svg" alt="version" />
   </a>
@@ -51,7 +54,7 @@ const model = require('parket');
 
 ## Usage
 
-Note: This library uses Proxies and Symbols which you might have to polyfill to support older browers
+Note: This library uses Proxies and Symbols. Proxies cannot be fully polyfilled so you have to target modern browers which support Proxies.
 
 ### Basic example
 

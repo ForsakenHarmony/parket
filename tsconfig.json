@@ -16,7 +16,8 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "lib": ["es6", "dom"],
-    "outDir": "dist/es"
+    "outDir": "dist/es",
+    "esModuleInterop": true
   },
   "include": ["src/**/*.ts"]
 }
