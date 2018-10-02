@@ -321,3 +321,7 @@ export default model;
 export function clearCache() {
   modelMap.clear();
 }
+
+// this is for non esm builds with microbundle
+// @ts-ignore
+model.clearCache = clearCache;
