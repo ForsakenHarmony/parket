@@ -126,6 +126,7 @@ function cProxy<S>(
   return new Proxy(obj, {
     get(target: Model<S>, prop) {
       if (prop === symbol) return true;
+      // @ts-ignore
       if (typeof prop === 'symbol') return target[prop];
       const res = target[prop];
       // check if there are other built in constructors that need this

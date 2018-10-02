@@ -31,6 +31,8 @@
 
 ## Why?
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/ForsakenHarmony/parket.svg)](https://greenkeeper.io/)
+
 I was disappointed with all the current state management solutions.
 Then I found mobx-state-tree, which seemed like a godsend to me (ok not really, but I liked the concept), but it was pretty big in terms of file size (mobx alone is big: 16.5kB).
 So I thought it's surely possible to make a smaller version of it, that's how this started.
