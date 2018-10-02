@@ -15,7 +15,8 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "lib": ["es2015"],
-    "outDir": "dist/es"
+    "outDir": "dist/es",
+    "esModuleInterop": true
   },
   "include": ["src/**/*.ts"]
 }
