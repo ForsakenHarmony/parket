@@ -1,4 +1,4 @@
-import model, { clearCache } from '../src/index_new';
+import model, { clearCache } from '../src';
 
 describe('model()', function() {
   beforeEach(() => {
@@ -200,7 +200,6 @@ describe('model()', function() {
   });
 
   it('should get the root in nested models', () => {
-    debugger;
     const Model2 = model('M1', () => ({
       root() {
         return this.getRoot().thing;

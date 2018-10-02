@@ -34,7 +34,9 @@ export type Init<S> = {
     | ((this: Model<S>, ...args: any[]) => any)
     | string
     | number
-    | object;
+    | object
+    | null
+    | undefined;
 };
 
 export type InitFn<K, S extends Init<K>> = (obj?: any) => S;
