@@ -14,6 +14,9 @@
   <a href="https://www.npmjs.org/package/parket">
     <img src="https://img.shields.io/npm/v/parket.svg" alt="npm">
   </a>
+  <a href="https://greenkeeper.io/">
+    <img src="https://badges.greenkeeper.io/ForsakenHarmony/parket.svg" alt="Greenkeeper badge" />
+  </a>
   <a href="https://www.npmjs.com/package/parket">
     <img src="https://img.shields.io/npm/dm/parket.svg" alt="version" />
   </a>
@@ -30,8 +33,6 @@
  * Modular (you can nest models inside each other)
 
 ## Why?
-
-[![Greenkeeper badge](https://badges.greenkeeper.io/ForsakenHarmony/parket.svg)](https://greenkeeper.io/)
 
 I was disappointed with all the current state management solutions.
 Then I found mobx-state-tree, which seemed like a godsend to me (ok not really, but I liked the concept), but it was pretty big in terms of file size (mobx alone is big: 16.5kB).
