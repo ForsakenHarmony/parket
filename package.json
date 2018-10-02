@@ -1,8 +1,7 @@
 {
   "name": "parket",
   "version": "1.0.0-canary.1",
-  "description":
-    "A small reactive™ library to manage application state, heavily inspired by mobx-state-tree",
+  "description": "A small reactive™ library to manage application state, heavily inspired by mobx-state-tree",
   "source": "src/index.ts",
   "typings": "dist/index.d.ts",
   "module": "dist/es/index.js",
