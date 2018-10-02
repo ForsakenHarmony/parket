@@ -56,24 +56,24 @@
     "react": "*"
   },
   "devDependencies": {
-    "@types/jest": "^22.2.0",
-    "babel-jest": "^22.1.0",
+    "@types/jest": "^23.3.2",
+    "babel-jest": "^23.6.0",
     "babel-plugin-jsx-pragmatic": "^1.0.2",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-env": "^1.6.1",
     "coveralls": "^3.0.0",
-    "husky": "^0.14.3",
-    "jest": "^22.1.4",
-    "lint-staged": "^6.0.1",
-    "microbundle": "^0.4.4",
-    "np": "^2.18.3",
+    "husky": "^1.1.0",
+    "jest": "^23.6.0",
+    "lint-staged": "^7.3.0",
+    "microbundle": "^0.6.0",
+    "np": "^3.0.4",
     "npm-run-all": "^4.1.2",
     "preact": "^8.2.7",
     "prettier": "^1.10.2",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "ts-jest": "^22.4.1",
-    "typescript": "^2.7.2"
+    "ts-jest": "^23.10.3",
+    "typescript": "^3.1.1"
   },
   "lint-staged": {
     "*.{js,ts}": [
