@@ -1,5 +1,5 @@
 import { Component } from 'preact';
-import { observe } from '../../../../src/integration/preact';
+import { observe } from 'parket/preact';
 import TodoTextInput from './todo-text-input';
 import classnames from 'classnames';
 

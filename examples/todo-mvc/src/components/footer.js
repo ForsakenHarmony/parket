@@ -1,7 +1,7 @@
 import { Component } from 'preact';
 import classnames from 'classnames';
 import { SHOW_ACTIVE, SHOW_ALL, SHOW_COMPLETED } from '../store';
-import { observe } from '../../../../src/integration/preact';
+import { observe } from 'parket/preact';
 
 const FILTER_TITLES = {
   [SHOW_ALL]: 'All',

@@ -1,26 +1,28 @@
 import { apc, modelName, modelSymbol, parentSymbol, vpc } from './symbols';
 import mitt, { EventHandler, Emitter } from './emitter';
 
-export type Event = {
+export interface Event {
   path?: string;
   value?: string;
   [index: string]: any;
-};
+}
 
-export type EmitFn = (evt: string, val: Event) => void;
+export interface EmitFn {
+  (evt: string, val: Event): void;
+}
 
 export interface ModelCommons<S> {
-  onAction: (fn: EventHandler, after?: boolean) => Function;
-  onSnapshot: (fn: EventHandler) => Function;
-  onPatch: (fn: EventHandler) => Function;
-  getSnapshot: () => object;
-  applySnapshot: (snapshot: object, dontemit?: boolean) => void;
-  getParent: () => Model<any> | null;
-  getRoot: () => Model<any>;
+  onAction(fn: EventHandler, after?: boolean): Function;
+  onSnapshot(fn: EventHandler): Function;
+  onPatch(fn: EventHandler): Function;
+  getSnapshot(): object;
+  applySnapshot(snapshot: object, dontemit?: boolean): void;
+  getParent(): Model<any> | null;
+  getRoot(): Model<any>;
 
   [modelName]: string;
   [modelSymbol]: boolean;
-  [parentSymbol]: (emit: EmitFn, _parent: Model<S>, _path: string) => void;
+  [parentSymbol](emit: EmitFn, _parent: Model<S>, _path: string): void;
 }
 
 export type Model<S> = ModelCommons<S> & {
@@ -29,17 +31,16 @@ export type Model<S> = ModelCommons<S> & {
   [index: string]: any;
 } & S;
 
-export type Init<S> = {
+export interface Init<S, T extends Model<S> = Model<S>> {
   [index: string]:
-    | ((this: Model<S>, ...args: any[]) => any)
+    | (<R>(this: T, ...args: any[]) => R)
     | string
     | number
     | object
+    | boolean
     | null
     | undefined;
-};
-
-export type InitFn<K, S extends Init<K>> = (obj?: any) => S;
+}
 
 export type Obj = { [index: string]: any };
 
@@ -174,11 +175,11 @@ function subscribe(emitter: Emitter, evt: string, fn: EventHandler) {
 
 const modelMap = new Map();
 
-export default function model<S extends Init<any>>(
+export default function model<S extends Init<S, Model<S>>>(
   name: string,
-  init: InitFn<S, S>
-): (obj?: Obj) => Model<S> {
-  function instantiate(obj: Obj = {}): Model<S> {
+  init: (obj?: Partial<S>) => S
+): (obj?: Partial<S>) => Model<S> {
+  function instantiate(obj: Partial<S> = {}): Model<S> {
     const symbol = Symbol('model');
 
     let path = '';
@@ -269,7 +270,7 @@ export default function model<S extends Init<any>>(
       } else if (typeof prop.value === 'function') {
         // action
         const action: Function = prop.value;
-        state[key] = (...args: any[]) => {
+        state[key] = ((...args: any[]) => {
           emit('action', { name: key, path: '', args: args });
           const res = action.apply(state[apc], args);
           if (res != null && res.then) {
@@ -278,7 +279,7 @@ export default function model<S extends Init<any>>(
             emitSnapshot(key, args);
           }
           return res;
-        };
+        }) as any;
         whitelist.push(key);
       } else {
         // prop

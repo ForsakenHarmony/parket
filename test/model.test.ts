@@ -50,7 +50,7 @@ describe('model()', function() {
   });
 
   it('should have props, actions and views', () => {
-    const Person = model('Person', ({ firstname }) => ({
+    const Person = model('Person', ({ firstname }: { firstname: string }) => ({
       firstname,
       lastname: 'Lennon',
 
@@ -90,6 +90,19 @@ describe('model()', function() {
     instance.setLastName('Clancy');
 
     expect(instance.fullname).toBe('Tom Clancy');
+  });
+
+  it('should allow arbitrary props', () => {
+    const Person = model('Person', () => ({
+      a: 'foo',
+      b: 1337,
+      c: null,
+      d: 'bob' as null | string,
+      e: null as null | number | string,
+    }));
+
+    const instance = Person();
+    expect(instance.d).toBe('bob');
   });
 
   it('should emit on change', () => {

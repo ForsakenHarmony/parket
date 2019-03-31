@@ -1,8 +1,7 @@
 {
   "name": "parket",
   "version": "1.0.0-canary.1",
-  "description":
-    "A small reactive™ library to manage application state, heavily inspired by mobx-state-tree",
+  "description": "A small reactive™ library to manage application state, heavily inspired by mobx-state-tree",
   "source": "src/index.ts",
   "typings": "dist/index.d.ts",
   "module": "dist/es/index.js",
@@ -57,24 +56,24 @@
     "react": "*"
   },
   "devDependencies": {
-    "@types/jest": "^23.3.2",
-    "babel-jest": "^23.6.0",
+    "@types/jest": "^24.0.11",
+    "babel-jest": "^24.5.0",
     "babel-plugin-jsx-pragmatic": "^1.0.2",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-env": "^1.7.0",
-    "coveralls": "^3.0.2",
-    "husky": "^1.1.0",
-    "jest": "^23.6.0",
-    "lint-staged": "^7.3.0",
-    "microbundle": "^0.6.0",
-    "np": "^3.0.4",
-    "npm-run-all": "^4.1.3",
-    "preact": "^8.3.1",
-    "prettier": "^1.14.3",
-    "react": "^16.5.2",
-    "react-dom": "^16.5.2",
-    "ts-jest": "^23.10.3",
-    "typescript": "^3.1.1"
+    "coveralls": "^3.0.3",
+    "husky": "^1.3.1",
+    "jest": "^24.5.0",
+    "lint-staged": "^8.1.5",
+    "microbundle": "^0.11.0",
+    "np": "^4.0.2",
+    "npm-run-all": "^4.1.5",
+    "preact": "^8.4.2",
+    "prettier": "^1.16.4",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "ts-jest": "^24.0.1",
+    "typescript": "^3.4.1"
   },
   "lint-staged": {
     "*.{js,ts}": [
