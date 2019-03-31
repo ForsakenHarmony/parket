@@ -1,5 +1,5 @@
 import { Component } from 'preact';
-import { observe } from '../../../../src/integration/preact';
+import { observe } from 'parket/preact';
 import TodoItem from './todo-item';
 import Footer from './footer';
 
@@ -42,7 +42,9 @@ export default class MainSection extends Component {
       <section class="main">
         {this.renderToggleAll()}
         <ul class="todo-list">
-          {filteredTodos.map(todo => <TodoItem key={todo.id} todo={todo} />)}
+          {filteredTodos.map(todo => (
+            <TodoItem key={todo.id} todo={todo} />
+          ))}
         </ul>
         {this.renderFooter()}
       </section>

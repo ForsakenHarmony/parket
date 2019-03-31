@@ -2,7 +2,7 @@ import 'todomvc-app-css/index.css';
 
 import App from './components/app';
 import TodoStore from './store';
-import devtools from '../../../src/devtools';
+import devtools from 'parket/devtools';
 
 const localStorageKey = 'parket-todomvc-example';
 const initialState = localStorage.getItem(localStorageKey)
