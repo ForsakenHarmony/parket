@@ -50,7 +50,7 @@ describe('model()', function() {
   });
 
   it('should have props, actions and views', () => {
-    const Person = model('Person', ({ firstname }) => ({
+    const Person = model('Person', ({ firstname }: { firstname: string }) => ({
       firstname,
       lastname: 'Lennon',
 
