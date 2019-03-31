@@ -1,4 +1,4 @@
-import model from '../../../src';
+import model from 'parket';
 
 export const SHOW_ALL = 'show_all';
 export const SHOW_COMPLETED = 'show_completed';
