@@ -18,7 +18,7 @@
     "build/*"
   ],
   "devDependencies": {
-    "eslint": "^5.6.1",
+    "eslint": "^6.0.0",
     "eslint-config-synacor": "^3.0.3",
     "if-env": "^1.0.0",
     "preact-cli": "^2.0.0",
