@@ -11,11 +11,7 @@ export interface Emitter {
   emit(type: string, evt: any): void;
 }
 
-/** Mitt: Tiny (~200b) functional event emitter / pubsub.
- *  @name mitt
- *  @returns {Emitter}
- */
-export default function mitt(): Emitter {
+export function emitter(): Emitter {
   const all: EventHandlerMap = {};
   return {
     /**
@@ -23,7 +19,7 @@ export default function mitt(): Emitter {
      *
      * @param  {String} type	Type of event to listen for, or `"*"` for all events
      * @param  {Function} handler Function to call in response to given event
-     * @memberOf mitt
+     * @memberOf emitter
      */
     on(type: string, handler: EventHandler) {
       (all[type] || (all[type] = [])).push(handler);
@@ -34,7 +30,7 @@ export default function mitt(): Emitter {
      *
      * @param  {String} type	Type of event to unregister `handler` from, or `"*"`
      * @param  {Function} handler Handler function to remove
-     * @memberOf mitt
+     * @memberOf emitter
      */
     off(type: string, handler: EventHandler) {
       if (all[type]) {
@@ -48,10 +44,10 @@ export default function mitt(): Emitter {
      *
      * @param {String} type  The event type to invoke
      * @param {Any} [evt]  Any value (object is recommended and powerful), passed to each handler
-     * @memberOf mitt
+     * @memberOf emitter
      */
     emit(type: string, evt: any) {
-      (all[type] || []).slice().map(handler => {
+      (all[type] || []).slice().map((handler) => {
         handler(evt);
       });
     },

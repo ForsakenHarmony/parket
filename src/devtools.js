@@ -8,7 +8,7 @@ export default function connectReduxDevtools(model) {
   });
   let applyingSnapshot = false;
 
-  devtools.subscribe(msg => {
+  devtools.subscribe((msg) => {
     if (msg.type === 'DISPATCH') {
       handleMonitorActions(msg);
     }
@@ -17,7 +17,7 @@ export default function connectReduxDevtools(model) {
   const initialState = model.getSnapshot();
   devtools.init(initialState);
 
-  model.onAction(action => {
+  model.onAction((action) => {
     if (applyingSnapshot) return;
     const copy = {};
     copy.type = action.name;

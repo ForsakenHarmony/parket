@@ -1,6 +1,6 @@
-import model, { clearCache } from '../src';
+import { model, clearCache } from '../src';
 
-describe('model()', function() {
+describe('model()', function () {
   beforeEach(() => {
     clearCache();
   });
@@ -61,7 +61,7 @@ describe('model()', function() {
         firstname: 'Tom',
         lastname: 'Lennon',
       }),
-      actions: self => ({
+      actions: (self) => ({
         setFirstName(first: string) {
           self.firstname = first;
         },
@@ -69,7 +69,7 @@ describe('model()', function() {
           self.lastname = last;
         },
       }),
-      views: state => ({
+      views: (state) => ({
         fullname: () => `${state.firstname} ${state.lastname}`,
       }),
     });
@@ -97,7 +97,7 @@ describe('model()', function() {
       initial: () => ({
         test: 0,
       }),
-      actions: state => ({
+      actions: (state) => ({
         increment: () => {
           state.test++;
         },
@@ -118,14 +118,14 @@ describe('model()', function() {
     expect(aSub).toBeCalled();
   });
 
-  it('should get events from nested objects', function() {
+  it('should get events from nested objects', function () {
     const Model = model('Model', {
       initial: () => ({
         nested: {
           test: 0,
         },
       }),
-      actions: state => ({
+      actions: (state) => ({
         increment: () => {
           state.nested.test++;
         },
@@ -140,12 +140,12 @@ describe('model()', function() {
     expect(sub).toBeCalled();
   });
 
-  it('should get events from nested models', function() {
+  it('should get events from nested models', function () {
     const Nested = model('Nested', {
       initial: () => ({
         test: 0,
       }),
-      actions: state => ({
+      actions: (state) => ({
         increment: () => {
           state.test++;
         },
@@ -166,17 +166,17 @@ describe('model()', function() {
     expect(sub).toBeCalled();
   });
 
-  it('should update on array methods', function() {
+  it('should update on array methods', function () {
     const Model = model('Model', {
       initial: () => ({
         arr: [] as any[],
       }),
-      actions: self => ({
+      actions: (self) => ({
         pushToArr(thing: any) {
           self.arr.push(thing);
         },
       }),
-      views: self => ({
+      views: (self) => ({
         firstElem: () => self.arr[0],
       }),
     });
@@ -190,7 +190,7 @@ describe('model()', function() {
     expect(instance.firstElem).toBe(2);
   });
 
-  it('should handle dates', function() {
+  it('should handle dates', function () {
     const Model = model('Model', {
       initial: () => ({
         date: new Date(),
@@ -202,13 +202,13 @@ describe('model()', function() {
     instance.date.getDate();
   });
 
-  it('should apply snapshots', function() {
+  it('should apply snapshots', function () {
     const Person = model('Person', {
       initial: () => ({
         firstname: 'John',
         lastname: 'Lennon',
       }),
-      views: state => ({
+      views: (state) => ({
         fullname: () => `${state.firstname} ${state.lastname}`,
       }),
     });
@@ -223,9 +223,13 @@ describe('model()', function() {
   it('should get the root in nested models', () => {
     const Model2 = model('M1', {
       initial: () => ({}),
-      actions: self => ({
-        root() {
-          return self.getRoot().thing;
+      actions: (self) => ({
+        root(): string {
+          const root = self.getRoot();
+          if (typeof root.thing === 'string') {
+            return root.thing;
+          }
+          return '';
         },
       }),
     });
@@ -234,9 +238,10 @@ describe('model()', function() {
       initial: () => ({
         nest: Model2(),
       }),
-      actions: self => ({
+      actions: (self) => ({
         root() {
-          return self.getRoot().thing;
+          const root = self.getRoot();
+          return root.thing;
         },
       }),
     });

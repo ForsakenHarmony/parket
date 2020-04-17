@@ -1,6 +1,6 @@
 import { modelSymbol, parentSymbol, apc, vpc, modelName } from './symbols';
 import { assign } from './util';
-import mitt, { EventHandler, Emitter } from './emitter';
+import { emitter as mitt, EventHandler, Emitter } from './emitter';
 
 const modelMap = new Map();
 
@@ -8,26 +8,36 @@ const objKeys = Object.keys.bind(Object);
 
 export type EmitFn = (evt: string, val: Event) => void;
 
-export type ModelCommons = {
-  onAction: (fn: EventHandler, after?: boolean) => Function;
-  onSnapshot: (fn: EventHandler) => Function;
-  onPatch: (fn: EventHandler) => Function;
-  getSnapshot: () => object;
-  applySnapshot: (snapshot: object, dontemit?: boolean) => void;
-  getParent: () => Model<any> | null;
-  getRoot: () => Model<any>;
-};
+interface ModelCommons {
+  onAction(fn: EventHandler, after?: boolean): Function;
+  onSnapshot(fn: EventHandler): Function;
+  onPatch(fn: EventHandler): Function;
+  getSnapshot(): object;
+  applySnapshot(snapshot: object, dontemit?: boolean): void;
+  getParent(): (UnknownObj & Model<UnknownObj>) | null;
+  getRoot(): UnknownObj & Model<UnknownObj>;
+}
 
 export type FnMap = { [index: string]: Function };
 
-export type Model<S> = ModelCommons & {
-  [vpc]: Model<S>;
-  [apc]: Model<S>;
+type Obj = { [index: string]: any };
+type UnknownObj = { [index: string]: unknown };
+
+export interface Model<S extends Obj> extends ModelCommons {
+  [vpc]: S & Model<S>;
+  [apc]: S & Model<S>;
   [modelName]: string;
   [modelSymbol]: boolean;
   [parentSymbol]: (emit: EmitFn, _parent: Model<S>, _path: string) => void;
-  [index: string]: any;
-} & S;
+}
+
+// export type Model<S> = ModelCommons & {
+//   [vpc]: S & Model<S>;
+//   [apc]: S & Model<S>;
+//   [modelName]: string;
+//   [modelSymbol]: boolean;
+//   [parentSymbol]: (emit: EmitFn, _parent: Model<S>, _path: string) => void;
+// };
 
 export type Event = {
   path?: string;
@@ -35,14 +45,14 @@ export type Event = {
   [index: string]: any;
 };
 
-export type ModelArgs<S> = {
+export type ModelArgs<S extends Obj, A extends FnMap, V extends FnMap> = {
   initial: () => S;
-  actions?: (self: Model<S>) => FnMap;
-  views?: (self: Model<S>) => FnMap;
+  actions?: (self: S & Model<S>) => A;
+  views?: (self: S & Model<S>) => V;
 };
 
-function diff<S>(
-  oldObj: Model<S>,
+function diff<S extends Obj>(
+  oldObj: S & Model<S>,
   newObj: { [index: string]: any },
   whitelist: string[]
 ) {
@@ -68,13 +78,13 @@ function diff<S>(
           ? oldVal.applySnapshot(newVal, true)
           : diff(oldVal, newVal, whitelist);
       } else {
-        oldObj[apc][key] = newVal;
+        (oldObj[apc] as Obj)[key] = newVal;
       }
     });
 }
 
-function setUpObject<S>(
-  obj: Model<S>,
+function setUpObject<S extends Obj, K extends keyof S>(
+  obj: S & Model<S>,
   emit: EmitFn,
   symbol: Symbol,
   path: string,
@@ -108,23 +118,29 @@ function setUpObject<S>(
   for (let prop in obj) {
     const val = obj[prop];
     if (val != null && typeof val === 'object') {
-      obj[prop] = setUpObject(val, emit, symbol, path + '/' + prop, parent);
+      obj[prop as K] = setUpObject<any, any>(
+        val,
+        emit,
+        symbol,
+        path + '/' + prop,
+        parent
+      );
     }
   }
 
   return obj;
 }
 
-function cProxy<S>(
-  obj: Model<S>,
+function cProxy<S extends Obj, K extends keyof (S & Model<S>)>(
+  obj: S & Model<S>,
   emit: EmitFn,
   symbol: Symbol,
   view: boolean,
   path: string,
-  parent: Model<S>
-) {
+  parent: S & Model<S>
+): S & Model<S> {
   return new Proxy(obj, {
-    get(target: Model<S>, prop) {
+    get(target: S & Model<S>, prop) {
       if (prop === symbol) return true;
       // @ts-ignore
       if (typeof prop === 'symbol') return target[prop];
@@ -139,13 +155,13 @@ function cProxy<S>(
         res
       );
     },
-    set(target: Model<S>, prop: string, val) {
+    set(target: S & Model<S>, prop: string, val) {
       if (view) {
         throw new Error("You can't modify the state outside of actions");
       }
       if (target[prop] === val) return true;
       if (typeof prop === 'symbol') {
-        target[prop] = val;
+        target[prop as K] = val;
         return true;
       }
       if (val != null && typeof val === 'object') {
@@ -154,14 +170,14 @@ function cProxy<S>(
           emit,
           symbol,
           path + '/' + prop,
-          parent || target[vpc]
+          parent || (target[vpc] as S & Model<S>)
         );
       }
-      target[prop] = val;
+      target[prop as K] = val;
       emit('patch', { path: path + '/' + prop, op: 'replace', value: val });
       return true;
     },
-  });
+  }) as S & Model<S>;
 }
 
 function subscribe(emitter: Emitter, evt: string, fn: EventHandler) {
@@ -169,10 +185,15 @@ function subscribe(emitter: Emitter, evt: string, fn: EventHandler) {
   return () => emitter.off(evt, fn);
 }
 
-function model<S>(
+export function model<
+  S extends Obj,
+  K extends keyof S,
+  A extends FnMap = {},
+  V extends FnMap = {}
+>(
   name: string,
-  { initial, actions, views }: ModelArgs<S>
-): (obj?: object | undefined) => Model<S> {
+  { initial, actions, views }: ModelArgs<S, A, V>
+): (obj?: object | undefined) => S & A & V & Model<S> {
   if (typeof initial !== 'function') {
     throw new Error(
       'You have to supply a function that returns the initial state'
@@ -192,7 +213,7 @@ function model<S>(
     let parentEmit: EmitFn | null = null;
     let parent: Model<any> | null = null;
     const emitter = mitt();
-    let state = assign(initial(), obj) as Model<S>;
+    let state = assign(initial(), obj) as S & Model<S>;
 
     const emit: EmitFn = (evt, val) => {
       if (evt === 'snapshot') {
@@ -224,11 +245,15 @@ function model<S>(
         diff(state, snapshot, whitelist);
         !dontemit && emit('snapshot', {});
       },
-      getParent() {
-        return parent;
+      getParent<M extends Model<M>>() {
+        return parent as M | null;
       },
-      getRoot() {
-        return parent ? (parent.getRoot() ? parent.getRoot() : parent) : state;
+      getRoot<M extends Model<M>>() {
+        return (parent
+          ? parent.getRoot()
+            ? parent.getRoot()
+            : parent
+          : state) as M;
       },
     };
 
@@ -251,7 +276,7 @@ function model<S>(
     state = setUpObject(state, emit, symbol, '');
 
     if (actions) {
-      const boundActions = actions(state[apc]);
+      const boundActions = actions(state[apc] as Model<S> & S);
       const keys = objKeys(boundActions);
 
       const emitSnapshot = (name: string, args: any[]) => {
@@ -262,7 +287,7 @@ function model<S>(
       for (let key of keys) {
         const action = boundActions[key];
 
-        state[key] = (...args: any[]) => {
+        (state[key as K] as any) = (...args: any[]) => {
           emit('action', { name: key, path: '', args: args });
           const res = action.apply(null, args);
           if (res != null && res.then) {
@@ -278,7 +303,7 @@ function model<S>(
     }
 
     if (views) {
-      const boundViews = views(state[vpc]);
+      const boundViews = views(state[vpc] as Model<S> & S);
       const keys = objKeys(boundViews);
       // r = refresh on get, v = value
       // I don't trust uglify here
@@ -313,15 +338,9 @@ function model<S>(
   }
 
   modelMap.set(name, instantiate);
-  return obj => instantiate(obj)[vpc];
+  return (obj) => instantiate(obj)[vpc] as S & A & V & Model<S>;
 }
-
-export default model;
 
 export function clearCache() {
   modelMap.clear();
 }
-
-// this is for non esm builds with microbundle
-// @ts-ignore
-model.clearCache = clearCache;
