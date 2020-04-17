@@ -1,7 +1,8 @@
 import { Component } from 'preact';
-import classnames from 'classnames';
-import { SHOW_ACTIVE, SHOW_ALL, SHOW_COMPLETED } from '../store';
+import cls from 'clsx';
 import { observe } from 'parket/preact';
+
+import { SHOW_ACTIVE, SHOW_ALL, SHOW_COMPLETED } from '../store';
 
 const FILTER_TITLES = {
   [SHOW_ALL]: 'All',
@@ -10,7 +11,7 @@ const FILTER_TITLES = {
 };
 
 @observe
-export default class Footer extends Component {
+export class Footer extends Component {
   renderTodoCount() {
     const { activeCount } = this.props.store;
     const itemWord = activeCount === 1 ? 'item' : 'items';
@@ -29,7 +30,7 @@ export default class Footer extends Component {
 
     return (
       <a
-        className={classnames({ selected: filter === selectedFilter })}
+        className={cls({ selected: filter === selectedFilter })}
         style={{ cursor: 'pointer' }}
         onClick={() => store.setFilter(filter)}
       >
@@ -54,7 +55,7 @@ export default class Footer extends Component {
       <footer className="footer">
         {this.renderTodoCount()}
         <ul className="filters">
-          {[SHOW_ALL, SHOW_ACTIVE, SHOW_COMPLETED].map(filter => (
+          {[SHOW_ALL, SHOW_ACTIVE, SHOW_COMPLETED].map((filter) => (
             <li key={filter}>{this.renderFilterLink(filter)}</li>
           ))}
         </ul>

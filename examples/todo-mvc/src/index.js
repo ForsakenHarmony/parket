@@ -1,8 +1,8 @@
 import 'todomvc-app-css/index.css';
-
-import App from './components/app';
-import TodoStore from './store';
 import devtools from 'parket/devtools';
+
+import { TodoStore } from './store';
+import { App } from './components/app';
 
 const localStorageKey = 'parket-todomvc-example';
 const initialState = localStorage.getItem(localStorageKey)
@@ -28,7 +28,7 @@ const store = TodoStore(initialState);
 
 devtools(store);
 
-store.onSnapshot(snapshot => {
+store.onSnapshot((snapshot) => {
   localStorage.setItem(localStorageKey, JSON.stringify(snapshot));
 });
 

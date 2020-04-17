@@ -1,10 +1,11 @@
 import { Component } from 'preact';
 import { observe } from 'parket/preact';
-import TodoItem from './todo-item';
-import Footer from './footer';
+
+import { TodoItem } from './todo-item';
+import { Footer } from './footer';
 
 @observe
-export default class MainSection extends Component {
+export class MainSection extends Component {
   handleClearCompleted = () => {
     this.props.store.clearCompleted();
   };
@@ -42,7 +43,7 @@ export default class MainSection extends Component {
       <section class="main">
         {this.renderToggleAll()}
         <ul class="todo-list">
-          {filteredTodos.map(todo => (
+          {filteredTodos.map((todo) => (
             <TodoItem key={todo.id} todo={todo} />
           ))}
         </ul>

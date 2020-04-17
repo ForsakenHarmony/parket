@@ -1,10 +1,11 @@
 import { Component } from 'preact';
 import { observe } from 'parket/preact';
-import TodoTextInput from './todo-text-input';
-import classnames from 'classnames';
+import cls from 'clsx';
+
+import { TodoTextInput } from './todo-text-input';
 
 @observe
-export default class TodoItem extends Component {
+export class TodoItem extends Component {
   state = {
     editing: false,
   };
@@ -32,7 +33,7 @@ export default class TodoItem extends Component {
         <TodoTextInput
           text={todo.text}
           editing={this.state.editing}
-          onSave={text => this.handleSave(todo.id, text)}
+          onSave={(text) => this.handleSave(todo.id, text)}
         />
       );
     } else {
@@ -52,7 +53,7 @@ export default class TodoItem extends Component {
 
     return (
       <li
-        className={classnames({
+        className={cls({
           completed: todo.completed,
           editing: this.state.editing,
         })}
