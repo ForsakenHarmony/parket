@@ -5,9 +5,7 @@
   "license": "MIT",
   "main": "src",
   "scripts": {
-    "start": "if-env NODE_ENV=production && npm run -s serve || npm run -s dev",
     "build": "preact build",
-    "serve": "preact build && preact serve",
     "dev": "preact watch",
     "lint": "eslint src"
   },
@@ -18,17 +16,15 @@
     "build/*"
   ],
   "devDependencies": {
-    "eslint": "^5.6.1",
-    "eslint-config-synacor": "^3.0.3",
-    "if-env": "^1.0.0",
-    "preact-cli": "^2.0.0",
-    "remotedev": "^0.2.7"
+    "eslint": "^6.8.0",
+    "eslint-config-synacor": "^3.0.5",
+    "preact-cli": "^3.0.0-rc.10",
+    "preact-render-to-string": "^5.1.6"
   },
   "dependencies": {
-    "classnames": "^2.2.5",
-    "parket": "file:../..",
-    "preact": "^8.2.1",
-    "preact-compat": "^3.17.0",
-    "todomvc-app-css": "^2.1.0"
+    "clsx": "^1.1.0",
+    "parket": "^0.4.2",
+    "preact": "^10.4.0",
+    "todomvc-app-css": "^2.3.0"
   }
 }

@@ -16,9 +16,8 @@
     "build:main": "microbundle -f umd,cjs",
     "build:integrations": "microbundle src/integration/*.js -o x.js -f cjs",
     "build:devtools": "microbundle src/devtools.js -o devtools.js -f cjs",
-    "prepare": "npm t",
-    "precommit": "lint-staged",
-    "prettier": "prettier --write {src,test,examples/**/src}/**/*.{js,ts}"
+    "prepare": "npm test",
+    "prettier": "prettier --write {src,test,examples/**/src}/**/*.{js,ts} ./README.md"
   },
   "prettier": {
     "singleQuote": true,
@@ -48,37 +47,37 @@
     "url": "https://github.com/ForsakenHarmony/parket/issues"
   },
   "homepage": "https://github.com/ForsakenHarmony/parket#readme",
-  "dependencies": {
-    "mitt": "^1.1.3"
-  },
   "peerDependencies": {
     "preact": "*",
     "react": "*"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.11",
-    "babel-jest": "^24.5.0",
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.5",
+    "@types/jest": "^25.2.1",
+    "babel-jest": "^25.3.0",
     "babel-plugin-jsx-pragmatic": "^1.0.2",
     "babel-plugin-transform-react-jsx": "^6.24.1",
-    "babel-preset-env": "^1.7.0",
-    "coveralls": "^3.0.3",
-    "husky": "^1.3.1",
-    "jest": "^24.5.0",
-    "lint-staged": "^8.1.5",
-    "microbundle": "^0.11.0",
-    "np": "^5.0.0",
+    "coveralls": "^3.0.11",
+    "husky": "^4.2.5",
+    "jest": "^25.3.0",
+    "lint-staged": "^10.1.4",
+    "microbundle": "^0.12.0-next.8",
+    "np": "^6.2.1",
     "npm-run-all": "^4.1.5",
-    "preact": "^8.4.2",
-    "prettier": "^1.16.4",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "ts-jest": "^24.0.1",
-    "typescript": "^3.4.1"
+    "preact": "^10.4.0",
+    "prettier": "^2.0.4",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "ts-jest": "^25.4.0",
+    "typescript": "^3.8.3"
   },
   "lint-staged": {
     "*.{js,ts}": [
-      "prettier --write",
-      "git add"
+      "prettier --write"
+    ],
+    "*.md": [
+      "prettier --write"
     ]
   },
   "jest": {
@@ -102,5 +101,10 @@
     "collectCoverageFrom": [
       "src/**/*.{ts,tsx,js,jsx}"
     ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   }
 }
