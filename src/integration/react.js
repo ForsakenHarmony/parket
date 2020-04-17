@@ -1,58 +1,68 @@
-import { Component, Children, createElement } from 'react';
+import {
+  createContext,
+  createElement,
+  useContext,
+  useState,
+  useEffect,
+} from 'react';
 
-import { observed } from '../symbols.ts';
 import { assign } from '../util.ts';
-
-const CONTEXT_TYPES = {
-  store: () => {},
-};
 
 const EMPTY_OBJECT = {};
 
 export function observe(Child) {
-  function Wrapper(props, context) {
-    Component.call(this, props, context);
-    const update = () => this.setState(EMPTY_OBJECT);
-    this.componentDidMount = () => {
-      this[observed] = Object.values(props)
-        .filter(prop => prop.__p_model && prop.onPatch)
-        .map(model => model.onPatch(update));
-    };
-    this.componentWillUnmount = () => {
-      this[observed].forEach(unsub => unsub());
-    };
-    this.render = () => createElement(Child, props);
-  }
-  return ((Wrapper.prototype = Object.create(
-    Component.prototype
-  )).constructor = Wrapper);
+  return function ObserveWrapper(props) {
+    const [_, update] = useState(EMPTY_OBJECT);
+
+    useEffect(() => {
+      const observed = Object.values(props)
+        .filter((prop) => prop.__p_model && prop.onPatch)
+        .map((model) => model.onPatch(() => update({})));
+
+      return () => observed.forEach((unsub) => unsub());
+    }, [props]);
+
+    return createElement(Child, props);
+  };
 }
+
+const ctx = createContext(null);
+export const Provider = ({ store, children }) =>
+  createElement(ctx.Provider, { value: store }, ...children);
 
 export function connect(Child) {
-  function Wrapper(props, context) {
-    Component.call(this, props, context);
-    const { store } = context;
-    const update = () => this.setState(EMPTY_OBJECT);
-    this.componentDidMount = () => {
-      this.unsubscribe = store.onPatch(update);
-    };
-    this.componentWillUnmount = () => {
-      this.unsubscribe();
-    };
-    this.render = () => createElement(Child, assign({ store }, props));
-  }
-  Wrapper.contextTypes = CONTEXT_TYPES;
-  return ((Wrapper.prototype = Object.create(
-    Component.prototype
-  )).constructor = Wrapper);
+  return function ConnectWrapper(props) {
+    const store = useContext(ctx);
+    const [_, update] = useState(EMPTY_OBJECT);
+
+    useEffect(() => {
+      const unsub = store.onPatch(() => update({}));
+      return unsub;
+    }, [store]);
+
+    return createElement(Child, assign({ store }, props));
+  };
 }
 
-export class Provider extends Component {
-  getChildContext() {
-    return { store: this.props.store };
-  }
-  render() {
-    return Children.only(this.props.children);
-  }
+export function useStore() {
+  const store = useContext(ctx);
+  const [_, update] = useState(EMPTY_OBJECT);
+
+  useEffect(() => {
+    const unsub = store.onPatch(() => update({}));
+    return unsub;
+  }, [store]);
+
+  return store;
 }
-Provider.childContextTypes = CONTEXT_TYPES;
+
+export function useObserved(store) {
+  const [_, update] = useState(EMPTY_OBJECT);
+
+  useEffect(() => {
+    const unsub = store.onPatch(() => update({}));
+    return unsub;
+  }, [store]);
+
+  return store;
+}

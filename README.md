@@ -27,17 +27,17 @@
 
 <br>
 
- * Small (~1.5KB)
- * Immutable from the outside, mutable in actions
- * Reactive (state emits updates without explicit calls to i.e. `setState`)
- * Modular (you can nest models inside each other)
+- Small (~1.5KB)
+- Immutable from the outside, mutable in actions
+- Reactive (state emits updates without explicit calls to i.e. `setState`)
+- Modular (you can nest models inside each other)
 
 ## Why?
 
 I was disappointed with all the current state management solutions.
 Then I found mobx-state-tree, which seemed like a godsend to me (ok not really, but I liked the concept), but it was pretty big in terms of file size (mobx alone is big: 16.5kB).
 So I thought it's surely possible to make a smaller version of it, that's how this started.
-And after 2 failed attempts I can finally say: **Here it is in all of its "glory".**
+And after 2 failed attempts I finally got something that works well
 
 ## Installation
 
@@ -47,9 +47,9 @@ $ npm i parket
 
 ```js
 // ES6
-import model from 'parket';
+import { model } from 'parket';
 // CJS
-const model = require('parket');
+const { model } = require('parket');
 ```
 
 ## Usage
@@ -59,26 +59,27 @@ Note: This library uses Proxies and Symbols. Proxies cannot be fully polyfilled 
 ### Basic example
 
 ```js
-import model from 'parket';
+import { model } from 'parket';
 // model returns a "constructor" function
-const Person = model('Person', { // name is used internally for serialization
+const Person = model('Person', {
+  // name is used internally for serialization
   initial: () => ({
     firstname: null,
     lastname: null,
     nested: null,
   }),
-  actions: state => ({
-    setFirstName (first) {
+  actions: (state) => ({
+    setFirstName(first) {
       state.firstname = first; // no set state, no returns to merge, it's reactive™
     },
-    setLastName (last) {
+    setLastName(last) {
       state.lastname = last;
     },
-    setNested (nested) {
+    setNested(nested) {
       state.nested = nested;
     },
   }),
-  views: state => ({
+  views: (state) => ({
     fullname: () => `${state.firstname} ${state.lastname}`, // views are computed properties
   }),
 });
@@ -115,13 +116,14 @@ const Async = model('Async', {
     loading: false,
     result: null,
   }),
-  actions: self => ({
-    async doSomethingAsync() { // actions can be async, parket doesn't care
+  actions: (self) => ({
+    async doSomethingAsync() {
+      // actions can be async, parket doesn't care
       self.loading = true;
       self.result = await somethingAsync(); // be aware that you should handle errors
       self.loading = false;
     },
-  })
+  }),
 });
 ```
 
@@ -134,7 +136,8 @@ import { observe, connect, Provider } from 'parket/preact'; // or 'parket/react'
 // observe keeps the component updated to models in the prop
 @observe
 class Observed extends Component {
-  render({person}) { // if you're using react, props don't get passed to render so you have to use `const {person} = this.props;`
+  render({ person }) {
+    // if you're using react, props don't get passed to render so you have to use `const {person} = this.props;`
     return (
       <div>
         <h1>{person.fullname}</h1>
@@ -146,7 +149,8 @@ class Observed extends Component {
 // connect inserts the store/instance into props
 @connect
 class Person extends Component {
-  render({store}) { // if you're using react, props don't get passed to render so you have to use `const {store} = this.props;`
+  render({ store }) {
+    // if you're using react, props don't get passed to render so you have to use `const {store} = this.props;`
     return (
       <div>
         <h1>{store.fullname}</h1>
@@ -159,8 +163,42 @@ class Person extends Component {
 const root = () => (
   <Provider store={instance}>
     <div id="app">
-      <Person/>
-      <Observed person={instance}/>
+      <Person />
+      <Observed person={instance} />
+    </div>
+  </Provider>
+);
+```
+
+### preact / react hooks
+
+```js
+function Observed({ person }) {
+  useObserved(person);
+
+  return (
+    <div>
+      <h1>{person.fullname}</h1>
+    </div>
+  );
+}
+
+function Person() {
+  const store = useStore();
+
+  return (
+    <div>
+      <h1>{store.fullname}</h1>
+    </div>
+  );
+}
+
+// Provider adds an instance to the context
+const root = () => (
+  <Provider store={instance}>
+    <div id="app">
+      <Person />
+      <Observed person={instance} />
     </div>
   </Provider>
 );
@@ -168,10 +206,9 @@ const root = () => (
 
 ## Credits
 
-* [Mobx State Tree for Inspiration](https://github.com/mobxjs/mobx-state-tree)
-* [unistore for the preact integration](https://github.com/developit/unistore/)
-* [Zouhir for the awesome logo](https://twitter.com/_zouhir)
+- [Mobx State Tree for Inspiration](https://github.com/mobxjs/mobx-state-tree)
+- [Zouhir for the awesome logo](https://twitter.com/_zouhir)
 
 ## License
 
-[MIT © hrmny.pw](https://oss.ninja/mit/forsakenharmony)
+[MIT © hrmny.sh](https://oss.ninja/mit/forsakenharmony)

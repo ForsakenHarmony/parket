@@ -1,44 +1,63 @@
-import { Component, h } from 'preact';
+import { createElement, createContext } from 'preact';
+import { useContext, useEffect, useState } from 'preact/hooks';
 
-import { observed } from '../symbols.ts';
 import { assign } from '../util.ts';
 
 const EMPTY_OBJECT = {};
 
 export function observe(Child) {
-  function Wrapper(props) {
-    const update = () => this.setState(EMPTY_OBJECT);
-    this.componentDidMount = () => {
-      this[observed] = Object.values(props)
-        .filter(prop => prop.__p_model && prop.onPatch)
-        .map(model => model.onPatch(update));
-    };
-    this.componentWillUnmount = () => {
-      this[observed].forEach(unsub => unsub());
-    };
-    this.render = props => h(Child, props);
-  }
+  return function ObserveWrapper(props) {
+    const [_, update] = useState(EMPTY_OBJECT);
 
-  return ((Wrapper.prototype = new Component()).constructor = Wrapper);
+    useEffect(() => {
+      const observed = Object.values(props)
+        .filter((prop) => prop.__p_model && prop.onPatch)
+        .map((model) => model.onPatch(() => update({})));
+
+      return () => observed.forEach((unsub) => unsub());
+    }, [props]);
+
+    return createElement(Child, props);
+  };
 }
+
+const ctx = createContext(null);
+export const Provider = ({ store, children }) =>
+  createElement(ctx.Provider, { value: store }, ...children);
 
 export function connect(Child) {
-  function Wrapper(props, { store }) {
-    const update = () => this.setState(EMPTY_OBJECT);
-    this.componentDidMount = () => {
-      this.unsubscribe = store.onPatch(update);
-    };
-    this.componentWillUnmount = () => {
-      this.unsubscribe();
-    };
-    this.render = props => h(Child, assign({ store }, props));
-  }
+  return function ConnectWrapper(props) {
+    const store = useContext(ctx);
+    const [_, update] = useState(EMPTY_OBJECT);
 
-  return ((Wrapper.prototype = new Component()).constructor = Wrapper);
+    useEffect(() => {
+      const unsub = store.onPatch(() => update({}));
+      return unsub;
+    }, [store]);
+
+    return createElement(Child, assign({ store }, props));
+  };
 }
 
-export function Provider(props) {
-  this.getChildContext = () => ({ store: props.store });
+export function useStore() {
+  const store = useContext(ctx);
+  const [_, update] = useState(EMPTY_OBJECT);
+
+  useEffect(() => {
+    const unsub = store.onPatch(() => update({}));
+    return unsub;
+  }, [store]);
+
+  return store;
 }
 
-Provider.prototype.render = props => props.children[0];
+export function useObserved(store) {
+  const [_, update] = useState(EMPTY_OBJECT);
+
+  useEffect(() => {
+    const unsub = store.onPatch(() => update({}));
+    return unsub;
+  }, [store]);
+
+  return store;
+}
