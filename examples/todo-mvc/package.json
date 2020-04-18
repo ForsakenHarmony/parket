@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "clsx": "^1.1.0",
-    "parket": "^0.4.2",
+    "parket": "^0.5.0",
     "preact": "^10.4.0",
     "todomvc-app-css": "^2.3.0"
   }
