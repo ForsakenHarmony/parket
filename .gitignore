@@ -4,8 +4,7 @@
 node_modules
 npm-debug.log
 
-/dist
-/full
+dist/
 /preact.js
 /preact.js.map
 /react.js

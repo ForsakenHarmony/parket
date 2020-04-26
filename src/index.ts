@@ -9,9 +9,9 @@ const objKeys = Object.keys.bind(Object);
 export type EmitFn = (evt: string, val: Event) => void;
 
 interface ModelCommons {
-  onAction(fn: EventHandler, after?: boolean): Function;
-  onSnapshot(fn: EventHandler): Function;
-  onPatch(fn: EventHandler): Function;
+  onAction(fn: EventHandler, after?: boolean): () => void;
+  onSnapshot(fn: EventHandler): () => void;
+  onPatch(fn: EventHandler): () => void;
   getSnapshot(): object;
   applySnapshot(snapshot: object, dontemit?: boolean): void;
   getParent(): (UnknownObj & Model<UnknownObj>) | null;

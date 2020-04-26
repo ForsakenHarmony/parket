@@ -1,0 +1,16 @@
+{
+  "name": "@parket/devtools",
+  "version": "0.1.0",
+  "private": true,
+  "types": "dist/index.d.ts",
+  "source": "src/index.js",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "npm-run-all --silent -p build:*",
+    "build:main": "microbundle build -f cjs",
+    "build:ts": "tsc"
+  },
+  "peerDependencies": {
+    "parket": "^0.5.0"
+  }
+}

@@ -14,10 +14,11 @@
     "build": "npm-run-all --silent -p build:*",
     "build:ts": "tsc",
     "build:main": "microbundle -f umd,cjs",
-    "build:integrations": "microbundle src/integration/*.js -o x.js -f cjs",
-    "build:devtools": "microbundle src/devtools.js -o devtools.js -f cjs",
+    "build:preact": "cd preact && npm run build",
+    "build:react": "cd react && npm run build",
+    "build:devtools": "cd devtools && npm run build",
     "prepare": "npm test",
-    "prettier": "prettier --write {src,test,examples/**/src}/**/*.{js,ts} ./README.md"
+    "prettier": "prettier --write {src,test,preact/src,react/src,examples/**/src}/**/*.{js,ts} ./README.md"
   },
   "prettier": {
     "singleQuote": true,
@@ -34,12 +35,15 @@
   "files": [
     "src",
     "dist",
-    "preact.js",
-    "preact.js.map",
-    "react.js",
-    "react.js.map",
-    "devtools.js",
-    "devtools.js.map"
+    "preact/package.json",
+    "preact/src",
+    "preact/dist",
+    "react/package.json",
+    "react/src",
+    "react/dist",
+    "devtools/package.json",
+    "devtools/src",
+    "devtools/dist"
   ],
   "author": "Leah <me@hrmny.pw>",
   "license": "MIT",
@@ -55,6 +59,7 @@
     "@babel/core": "^7.9.0",
     "@babel/preset-env": "^7.9.5",
     "@types/jest": "^25.2.1",
+    "@types/react": "^16.9.34",
     "babel-jest": "^25.3.0",
     "babel-plugin-jsx-pragmatic": "^1.0.2",
     "babel-plugin-transform-react-jsx": "^6.24.1",

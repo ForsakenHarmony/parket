@@ -14,9 +14,17 @@
     "noImplicitThis": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "lib": ["es2015"],
+    "lib": ["es2015", "dom"],
     "outDir": "dist/es",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": {
+      "parket": ["."],
+      "parket/*": ["./*"],
+      "preact": ["./node_modules/preact"],
+      "react": ["./node_modules/react"]
+    }
   },
-  "include": ["src/**/*.ts"]
+  "files": ["src/index.ts"],
+  "exclude": ["dist/**/*", "parket-react/dist", "preact/dist", "node_modules"]
 }

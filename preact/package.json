@@ -1,0 +1,19 @@
+{
+  "name": "@parket/preact",
+  "version": "0.1.0",
+  "private": true,
+  "types": "dist/index.d.ts",
+  "source": "src/index.ts",
+  "main": "dist/index.js",
+  "module": "dist/es/index.js",
+  "umd:main": "dist/parket-preact.umd.js",
+  "scripts": {
+    "build": "npm-run-all --silent -p build:*",
+    "build:main": "microbundle build",
+    "build:ts": "tsc"
+  },
+  "peerDependencies": {
+    "parket": "^0.5.0",
+    "preact": "^10.4.1"
+  }
+}
